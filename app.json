@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Coloring AI",
+    "slug": "coloring-ai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./public/icon-dark-32x32.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./public/placeholder-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0b0b0f"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./public/placeholder-logo.png",
+        "backgroundColor": "#0b0b0f"
+      }
+    },
+    "web": {
+      "favicon": "./public/icon-dark-32x32.png"
+    }
+  }
+}
