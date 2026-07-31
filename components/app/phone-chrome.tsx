@@ -1,45 +1,12 @@
 import React, { ReactNode } from 'react'
-import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from 'react-native'
-import { Signal, Wifi, BatteryFull, ChevronLeft } from 'lucide-react-native'
+import { View, Text } from 'react-native'
+import { ChevronLeft } from 'lucide-react-native'
 import { IconButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
 
 export function StatusBar({ dark }: { dark?: boolean }) {
-  const { theme } = useApp()
-  const textColor = dark ? '#ffffff' : theme.foreground
-
-  return (
-    <View
-      style={{
-        zIndex: 30,
-        height: 48,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 24,
-        paddingTop: 4,
-      }}
-    >
-      <Text style={{ fontSize: 13, fontWeight: '600', color: textColor, letterSpacing: -0.2 }}>9:41</Text>
-      <View
-        style={{
-          position: 'absolute',
-          left: '50%',
-          top: 8,
-          height: 24,
-          width: 96,
-          marginLeft: -48,
-          borderRadius: 999,
-          backgroundColor: '#000000',
-        }}
-      />
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        <Signal size={16} color={textColor} strokeWidth={2.5} />
-        <Wifi size={16} color={textColor} strokeWidth={2.5} />
-        <BatteryFull size={20} color={textColor} strokeWidth={2} />
-      </View>
-    </View>
-  )
+  // Native status bar is handled by expo-status-bar in App.tsx and SafeAreaView
+  return null
 }
 
 export function ScreenHeader({
@@ -58,7 +25,7 @@ export function ScreenHeader({
   const { theme } = useApp()
 
   return (
-    <View style={{ flexDirection: 'column', gap: 4, paddingHorizontal: 20, paddingBottom: 8, paddingTop: 4 }}>
+    <View style={{ flexDirection: 'column', gap: 4, paddingHorizontal: 20, paddingBottom: 8, paddingTop: 12 }}>
       <View style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           {onBack ? (
@@ -87,16 +54,6 @@ export function ScreenHeader({
 }
 
 export function HomeIndicator({ dark }: { dark?: boolean }) {
-  return (
-    <View style={{ height: 24, alignItems: 'center', justifyContent: 'center' }}>
-      <View
-        style={{
-          height: 5,
-          width: 128,
-          borderRadius: 999,
-          backgroundColor: dark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
-        }}
-      />
-    </View>
-  )
+  // Native home indicator space is handled by safe area inset
+  return null
 }
