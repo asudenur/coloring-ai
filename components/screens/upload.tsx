@@ -17,7 +17,7 @@ const RECENT = [
 ]
 
 export function UploadScreen() {
-  const { go, goBack, theme, setSelectedPhoto } = useApp()
+  const { go, goBack, theme, setSelectedPhoto, t } = useApp()
 
   const pickFromGallery = async () => {
     try {
@@ -40,7 +40,7 @@ export function UploadScreen() {
     try {
       const permissionResult = await ImagePicker.requestCameraPermissionsAsync()
       if (permissionResult.granted === false) {
-        Alert.alert('Permission Required', 'Camera permission is needed to take a photo.')
+        Alert.alert(t('upload.permissionTitle'), t('upload.permissionBody'))
         return
       }
 
@@ -65,7 +65,7 @@ export function UploadScreen() {
   }
 
   return (
-    <Screen header={<ScreenHeader title="New Coloring Page" onBack={goBack} />}>
+    <Screen header={<ScreenHeader title={t('upload.title')} onBack={goBack} />}>
       <View style={{ gap: 24, paddingBottom: 32 }}>
         {/* Drop / Browse area */}
         <TouchableOpacity
@@ -103,21 +103,21 @@ export function UploadScreen() {
             <UploadCloud size={32} color="#ffffff" strokeWidth={2} />
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: theme.foreground }}>Choose your photo</Text>
-            <Text style={{ marginTop: 4, fontSize: 13, color: theme.mutedForeground }}>Tap to browse device photo library</Text>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: theme.foreground }}>{t('upload.choosePhoto')}</Text>
+            <Text style={{ marginTop: 4, fontSize: 13, color: theme.mutedForeground }}>{t('upload.browseHint')}</Text>
           </View>
         </TouchableOpacity>
 
         {/* Source buttons */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <SourceCard icon={Camera} label="Camera" onClick={takePhotoWithCamera} />
-          <SourceCard icon={Images} label="Gallery" onClick={pickFromGallery} />
+          <SourceCard icon={Camera} label={t('upload.camera')} onClick={takePhotoWithCamera} />
+          <SourceCard icon={Images} label={t('upload.gallery')} onClick={pickFromGallery} />
         </View>
 
         {/* Recent photos */}
         <View style={{ gap: 12 }}>
           <View style={{ paddingHorizontal: 4 }}>
-            <Text style={{ fontSize: 17, fontWeight: '700', color: theme.foreground }}>Recent photos</Text>
+            <Text style={{ fontSize: 17, fontWeight: '700', color: theme.foreground }}>{t('upload.recentPhotos')}</Text>
           </View>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
             {RECENT.map((src, i) => (
@@ -141,7 +141,7 @@ export function UploadScreen() {
         </View>
 
         <Text style={{ textAlign: 'center', fontSize: 12, color: theme.mutedForeground }}>
-          Supports JPG, PNG & HEIC · up to 25MB
+          {t('upload.formats')}
         </Text>
       </View>
     </Screen>

@@ -9,9 +9,9 @@ import { ASSETS } from '@/lib/assets'
 import { Bell, Camera, ImagePlus, Wand2, Crown, ArrowRight, User as UserIcon, LucideIcon, ImageOff, Plus } from 'lucide-react-native'
 
 export function HomeScreen() {
-  const { go, theme, user, creations, setSelectedPhoto } = useApp()
+  const { go, theme, user, creations, setSelectedPhoto, t } = useApp()
 
-  const displayName = user ? user.name : 'Guest User'
+  const displayName = user ? user.name : t('common.guestUser')
   const avatarSource = user?.avatar || ASSETS.photos.portrait
 
   return (
@@ -54,7 +54,7 @@ export function HomeScreen() {
         {/* Header Greeting */}
         <View style={{ paddingHorizontal: 4 }}>
           <Text style={{ fontSize: 14, fontWeight: '500', color: theme.mutedForeground }}>
-            Good morning, {displayName}
+            {t('home.greeting', { name: displayName })}
           </Text>
           <Text
             style={{
@@ -66,7 +66,7 @@ export function HomeScreen() {
               lineHeight: 32,
             }}
           >
-            What will you turn into art today?
+            {t('home.title')}
           </Text>
         </View>
 
@@ -100,9 +100,9 @@ export function HomeScreen() {
               <ImagePlus size={28} color="#ffffff" strokeWidth={2} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 19, fontWeight: '700', color: '#ffffff' }}>Upload a Photo</Text>
+              <Text style={{ fontSize: 19, fontWeight: '700', color: '#ffffff' }}>{t('home.uploadPhoto')}</Text>
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
-                Start a new coloring page
+                {t('home.uploadHint')}
               </Text>
             </View>
             <ArrowRight size={20} color="#ffffff" />
@@ -111,18 +111,18 @@ export function HomeScreen() {
 
         {/* Quick actions */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <QuickCard icon={Camera} label="Camera" hint="Snap & convert" onClick={() => go('upload')} />
+          <QuickCard icon={Camera} label={t('home.camera')} hint={t('home.cameraHint')} onClick={() => go('upload')} />
         </View>
 
         {/* AI feature cards */}
         <View style={{ gap: 12 }}>
-          <SectionTitle title="AI Styles" action="See all" onAction={() => go('style')} />
+          <SectionTitle title={t('home.aiStyles')} action={t('common.seeAll')} onAction={() => go('style')} />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 4 }}>
             {[
-              { t: 'Detailed', s: ASSETS.styles.detailed },
-              { t: 'Anime', s: ASSETS.styles.anime },
-              { t: 'Comic', s: ASSETS.styles.comic },
-              { t: 'Minimal', s: ASSETS.styles.minimal },
+              { t: t('home.styleDetailed'), s: ASSETS.styles.detailed },
+              { t: t('home.styleAnime'), s: ASSETS.styles.anime },
+              { t: t('home.styleComic'), s: ASSETS.styles.comic },
+              { t: t('home.styleMinimal'), s: ASSETS.styles.minimal },
             ].map((f) => (
               <TouchableOpacity
                 key={f.t}
@@ -154,7 +154,7 @@ export function HomeScreen() {
 
         {/* Recent creations */}
         <View style={{ gap: 12 }}>
-          <SectionTitle title="Recent creations" action="History" onAction={() => go('history')} />
+          <SectionTitle title={t('home.recentCreations')} action={t('nav.history')} onAction={() => go('history')} />
           {creations.length === 0 ? (
             <TouchableOpacity
               activeOpacity={0.85}
@@ -184,9 +184,9 @@ export function HomeScreen() {
                 <ImageOff size={20} color={theme.mutedForeground} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '600', color: theme.foreground }}>No creations yet</Text>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: theme.foreground }}>{t('home.noCreations')}</Text>
                 <Text style={{ fontSize: 12, color: theme.mutedForeground, marginTop: 2 }}>
-                  Tap here to upload a photo & create your first page
+                  {t('home.noCreationsHint')}
                 </Text>
               </View>
               <Plus size={20} color={theme.brand} />
@@ -235,13 +235,13 @@ export function HomeScreen() {
             </View>
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <Text style={{ fontSize: 17, fontWeight: '700', color: theme.primaryForeground }}>Go Premium</Text>
+                <Text style={{ fontSize: 17, fontWeight: '700', color: theme.primaryForeground }}>{t('home.goPremium')}</Text>
                 <Badge tone="brand" style={{ backgroundColor: theme.brand }}>
                   <Text style={{ color: '#ffffff', fontSize: 11, fontWeight: '700' }}>-40%</Text>
                 </Badge>
               </View>
               <Text style={{ fontSize: 13, color: theme.primaryForeground, opacity: 0.7, marginTop: 2 }}>
-                Unlimited pages · all styles · no ads
+                {t('home.premiumHint')}
               </Text>
             </View>
             <TouchableOpacity

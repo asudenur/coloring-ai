@@ -5,6 +5,7 @@ import { authenticateWithGoogle, authenticateWithApple } from '@/lib/auth'
 import { ASSETS } from '@/lib/assets'
 import type { Creation } from '@/lib/data'
 import type { CropRatio } from '@/lib/crop'
+import { type Locale, translate, getDeviceLocale } from '@/lib/i18n'
 
 export type UserProfile = {
   id: string
@@ -25,6 +26,9 @@ type AppState = {
   goBack: () => void
   dark: boolean
   toggleDark: () => void
+  locale: Locale
+  setLocale: (locale: Locale) => void
+  t: (key: string, params?: Record<string, string | number>) => string
   theme: Theme
   selectedStyle: string
   setSelectedStyle: (id: string) => void
@@ -47,6 +51,7 @@ const AppContext = createContext<AppState | null>(null)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [historyStack, setHistoryStack] = useState<ScreenKey[]>(['splash'])
   const [dark, setDark] = useState(false)
+  const [locale, setLocale] = useState<Locale>(getDeviceLocale)
   const [selectedStyle, setSelectedStyle] = useState('general')
   const [selectedPhoto, setSelectedPhoto] = useState<any>(ASSETS.photos.portrait)
   const [cropRatio, setCropRatio] = useState<CropRatio>('1:1')
@@ -145,6 +150,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         goBack,
         dark,
         toggleDark: () => setDark((d) => !d),
+        locale,
+        setLocale,
+        t: (key, params) => translate(locale, key, params),
         theme,
         selectedStyle,
         setSelectedStyle,

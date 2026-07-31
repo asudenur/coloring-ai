@@ -20,7 +20,7 @@ import { RotateCw } from 'lucide-react-native'
 
 export function CropScreen() {
 
-  const { go, goBack, theme, selectedPhoto, cropRatio, setCropRatio, dark } = useApp()
+  const { go, goBack, theme, selectedPhoto, cropRatio, setCropRatio, dark, t } = useApp()
 
   const [zoom, setZoom] = useState(1)
 
@@ -36,7 +36,7 @@ export function CropScreen() {
 
     <Screen
 
-      header={<ScreenHeader title="Crop & Adjust" onBack={goBack} />}
+      header={<ScreenHeader title={t('crop.title')} onBack={goBack} />}
 
       padded={false}
 
@@ -210,7 +210,7 @@ export function CropScreen() {
 
           <AppButton size="lg" block onClick={() => go('style')}>
 
-            Continue
+            {t('common.continue')}
 
           </AppButton>
 

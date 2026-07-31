@@ -7,7 +7,7 @@ import { Sparkles, ChevronRight } from 'lucide-react-native'
 import Svg, { Path } from 'react-native-svg'
 
 export function LoginScreen() {
-  const { theme, loginWithApple, loginWithGoogle, loginAsGuest } = useApp()
+  const { theme, loginWithApple, loginWithGoogle, loginAsGuest, t } = useApp()
   const [loading, setLoading] = useState<string | null>(null)
 
   const handleAppleAuth = async () => {
@@ -60,7 +60,7 @@ export function LoginScreen() {
               textAlign: 'center',
             }}
           >
-            Welcome to Coloring AI
+            {t('login.title')}
           </Text>
           <Text
             style={{
@@ -72,7 +72,7 @@ export function LoginScreen() {
               textAlign: 'center',
             }}
           >
-            Sign in to save creations, sync across devices and unlock premium styles.
+            {t('login.subtitle')}
           </Text>
         </View>
 
@@ -82,7 +82,7 @@ export function LoginScreen() {
               <ActivityIndicator color={theme.primaryForeground} />
             ) : (
               <Text style={{ fontSize: 16, fontWeight: '700', color: theme.primaryForeground }}>
-                 Continue with Apple
+                {t('login.continueApple')}
               </Text>
             )}
           </AppButton>
@@ -94,7 +94,7 @@ export function LoginScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <GoogleMark />
                 <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>
-                  Continue with Google
+                  {t('login.continueGoogle')}
                 </Text>
               </View>
             )}
@@ -107,13 +107,13 @@ export function LoginScreen() {
             style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 8 }}
           >
             <Text style={{ fontSize: 15, fontWeight: '600', color: theme.mutedForeground }}>
-              Continue as Guest
+              {t('login.continueGuest')}
             </Text>
             <ChevronRight size={16} color={theme.mutedForeground} />
           </TouchableOpacity>
 
           <Text style={{ textAlign: 'center', fontSize: 11, lineHeight: 16, color: theme.mutedForeground, paddingHorizontal: 16 }}>
-            By continuing you agree to our Terms of Service and Privacy Policy.
+            {t('login.terms')}
           </Text>
         </View>
       </View>
