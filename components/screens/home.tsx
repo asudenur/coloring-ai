@@ -7,10 +7,13 @@ import { Card, Badge, SectionTitle } from '@/components/kit/primitives'
 import { useApp } from '@/components/app/app-provider'
 import { CREATIONS } from '@/lib/data'
 import { ASSETS } from '@/lib/assets'
-import { Bell, Camera, ImagePlus, Wand2, ScanFace, Crown, ArrowRight, LucideIcon } from 'lucide-react-native'
+import { Bell, Camera, ImagePlus, Wand2, ScanFace, Crown, ArrowRight, User as UserIcon, LucideIcon } from 'lucide-react-native'
 
 export function HomeScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, user } = useApp()
+
+  const displayName = user ? user.name : 'Guest User'
+  const avatarSource = user?.avatar || ASSETS.photos.portrait
 
   return (
     <Screen
@@ -32,9 +35,16 @@ export function HomeScreen() {
                   overflow: 'hidden',
                   borderWidth: 1,
                   borderColor: theme.border,
+                  backgroundColor: theme.secondary,
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                <Image source={ASSETS.photos.portrait} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                {user?.avatar ? (
+                  <Image source={avatarSource} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                ) : (
+                  <UserIcon size={22} color={theme.foreground} />
+                )}
               </TouchableOpacity>
             </View>
           }
@@ -44,7 +54,9 @@ export function HomeScreen() {
       <View style={{ gap: 24, paddingBottom: 110 }}>
         {/* Header Greeting */}
         <View style={{ paddingHorizontal: 4 }}>
-          <Text style={{ fontSize: 14, fontWeight: '500', color: theme.mutedForeground }}>Good morning, Alex</Text>
+          <Text style={{ fontSize: 14, fontWeight: '500', color: theme.mutedForeground }}>
+            Good morning, {displayName}
+          </Text>
           <Text
             style={{
               marginTop: 2,

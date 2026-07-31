@@ -21,7 +21,10 @@ const USAGE = [
 ]
 
 export function CreditsScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, user } = useApp()
+
+  const credits = user ? user.credits : 10
+  const pagesCount = Math.floor(credits / 2)
 
   return (
     <Screen header={<ScreenHeader title="AI Credits" onBack={() => go('profile')} />}>
@@ -43,8 +46,10 @@ export function CreditsScreen() {
           <Text style={{ marginTop: 12, fontSize: 13, textTransform: 'uppercase', letterSpacing: 1, color: theme.primaryForeground, opacity: 0.6 }}>
             Remaining credits
           </Text>
-          <Text style={{ fontSize: 44, fontWeight: '800', color: theme.primaryForeground, marginTop: 4 }}>240</Text>
-          <Text style={{ marginTop: 4, fontSize: 12, color: theme.primaryForeground, opacity: 0.6 }}>≈ 120 coloring pages</Text>
+          <Text style={{ fontSize: 44, fontWeight: '800', color: theme.primaryForeground, marginTop: 4 }}>{credits}</Text>
+          <Text style={{ marginTop: 4, fontSize: 12, color: theme.primaryForeground, opacity: 0.6 }}>
+            ≈ {pagesCount} coloring pages
+          </Text>
         </Card>
 
         {/* Buy */}

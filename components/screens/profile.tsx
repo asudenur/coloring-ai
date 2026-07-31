@@ -5,11 +5,20 @@ import { ScreenHeader } from '@/components/app/phone-chrome'
 import { Card, Badge } from '@/components/kit/primitives'
 import { useApp } from '@/components/app/app-provider'
 import { ASSETS } from '@/lib/assets'
-import { Crown, Coins, Download, Sparkles, Settings, LifeBuoy, ShieldCheck, ChevronRight, Star, LucideIcon } from 'lucide-react-native'
+import { Crown, Coins, Download, Sparkles, Settings, LifeBuoy, ShieldCheck, ChevronRight, Star, LogOut, User as UserIcon, LucideIcon } from 'lucide-react-native'
 import type { ScreenKey } from '@/lib/screens'
 
 export function ProfileScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, user, logout } = useApp()
+
+  const name = user ? user.name : 'Guest User'
+  const email = user ? user.email : 'guest@coloring.ai'
+  const providerLabel = user?.provider === 'apple' ? 'Apple ID' : user?.provider === 'google' ? 'Google Account' : 'Guest Account'
+  const credits = user ? user.credits : 10
+  const creations = user ? user.creationsCount : 0
+  const downloads = user ? user.downloadsCount : 0
+  const planName = user ? user.planName : 'Guest Mode'
+  const isPremium = user?.isPremium || false
 
   return (
     <Screen bottomNav="profile" header={<ScreenHeader title="Profile" large />}>
@@ -25,27 +34,40 @@ export function ProfileScreen() {
               borderColor: theme.brand,
               padding: 2,
               overflow: 'hidden',
+              backgroundColor: theme.secondary,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            <Image source={ASSETS.photos.portrait} style={{ width: '100%', height: '100%', borderRadius: 34, resizeMode: 'cover' }} />
+            {user?.avatar ? (
+              <Image source={user.avatar} style={{ width: '100%', height: '100%', borderRadius: 34, resizeMode: 'cover' }} />
+            ) : (
+              <UserIcon size={34} color={theme.foreground} />
+            )}
           </View>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Text style={{ fontSize: 20, fontWeight: '700', color: theme.foreground }}>Alex Morgan</Text>
-              <Badge tone="brand">
-                <Crown size={12} color={theme.brand} />
-                <Text style={{ color: theme.brand, fontSize: 11, fontWeight: '700', marginLeft: 2 }}>Premium</Text>
-              </Badge>
+              <Text style={{ fontSize: 20, fontWeight: '700', color: theme.foreground }}>{name}</Text>
+              {isPremium ? (
+                <Badge tone="brand">
+                  <Crown size={12} color={theme.brand} />
+                  <Text style={{ color: theme.brand, fontSize: 11, fontWeight: '700', marginLeft: 2 }}>PRO</Text>
+                </Badge>
+              ) : (
+                <Badge tone="neutral">
+                  <Text style={{ fontSize: 11, fontWeight: '600', color: theme.mutedForeground }}>{providerLabel}</Text>
+                </Badge>
+              )}
             </View>
-            <Text style={{ fontSize: 13, color: theme.mutedForeground, marginTop: 2 }}>alex.morgan@icloud.com</Text>
+            <Text style={{ fontSize: 13, color: theme.mutedForeground, marginTop: 2 }}>{email}</Text>
           </View>
         </View>
 
         {/* Stats */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <Stat icon={Sparkles} value="128" label="Creations" />
-          <Stat icon={Download} value="94" label="Downloads" />
-          <Stat icon={Coins} value="240" label="Credits" />
+          <Stat icon={Sparkles} value={String(creations)} label="Creations" />
+          <Stat icon={Download} value={String(downloads)} label="Downloads" />
+          <Stat icon={Coins} value={String(credits)} label="Credits" />
         </View>
 
         {/* Subscription card */}
@@ -55,8 +77,10 @@ export function ProfileScreen() {
               <Text style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.8, color: theme.primaryForeground, opacity: 0.5 }}>
                 Current plan
               </Text>
-              <Text style={{ fontSize: 19, fontWeight: '700', color: theme.primaryForeground, marginTop: 2 }}>Yearly Premium</Text>
-              <Text style={{ fontSize: 12, color: theme.primaryForeground, opacity: 0.6, marginTop: 2 }}>Renews Mar 24, 2026</Text>
+              <Text style={{ fontSize: 19, fontWeight: '700', color: theme.primaryForeground, marginTop: 2 }}>{planName}</Text>
+              <Text style={{ fontSize: 12, color: theme.primaryForeground, opacity: 0.6, marginTop: 2 }}>
+                {isPremium ? 'Renews Mar 24, 2026' : 'Upgrade for unlimited access'}
+              </Text>
             </View>
             <TouchableOpacity
               onPress={() => go('premium')}
@@ -82,7 +106,7 @@ export function ProfileScreen() {
             overflow: 'hidden',
           }}
         >
-          <Row icon={Coins} label="AI Credits" hint="240 left" to="credits" go={go} />
+          <Row icon={Coins} label="AI Credits" hint={`${credits} left`} to="credits" go={go} />
           <Row icon={Crown} label="Subscription" to="premium" go={go} />
           <Row icon={Settings} label="Settings" to="settings" go={go} />
           <Row icon={LifeBuoy} label="Support" to="settings" go={go} />
@@ -91,6 +115,7 @@ export function ProfileScreen() {
 
         <TouchableOpacity
           activeOpacity={0.85}
+          onPress={logout}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -98,13 +123,13 @@ export function ProfileScreen() {
             gap: 8,
             borderRadius: 18,
             borderWidth: 1,
-            borderColor: theme.border,
-            backgroundColor: theme.card,
+            borderColor: 'rgba(239, 68, 68, 0.3)',
+            backgroundColor: 'rgba(239, 68, 68, 0.06)',
             paddingVertical: 14,
           }}
         >
-          <Star size={16} color={theme.brand} />
-          <Text style={{ fontSize: 14, fontWeight: '600', color: theme.mutedForeground }}>Rate Coloring AI</Text>
+          <LogOut size={18} color={theme.destructive} />
+          <Text style={{ fontSize: 15, fontWeight: '700', color: theme.destructive }}>Sign Out</Text>
         </TouchableOpacity>
       </View>
     </Screen>

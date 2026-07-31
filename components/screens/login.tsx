@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { StatusBar, HomeIndicator } from '@/components/app/phone-chrome'
 import { AppButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
@@ -7,7 +7,26 @@ import { Sparkles, ChevronRight } from 'lucide-react-native'
 import Svg, { Path } from 'react-native-svg'
 
 export function LoginScreen() {
-  const { go, theme } = useApp()
+  const { theme, loginWithApple, loginWithGoogle, loginAsGuest } = useApp()
+  const [loading, setLoading] = useState<string | null>(null)
+
+  const handleAppleAuth = async () => {
+    setLoading('apple')
+    try {
+      await loginWithApple()
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const handleGoogleAuth = async () => {
+    setLoading('google')
+    try {
+      await loginWithGoogle()
+    } finally {
+      setLoading(null)
+    }
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
@@ -58,23 +77,33 @@ export function LoginScreen() {
         </View>
 
         <View style={{ gap: 12, paddingBottom: 24 }}>
-          <AppButton variant="dark" size="lg" block onClick={() => go('home')}>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.primaryForeground }}>
-               Continue with Apple
-            </Text>
+          <AppButton variant="dark" size="lg" block onClick={handleAppleAuth} disabled={loading !== null}>
+            {loading === 'apple' ? (
+              <ActivityIndicator color={theme.primaryForeground} />
+            ) : (
+              <Text style={{ fontSize: 16, fontWeight: '700', color: theme.primaryForeground }}>
+                 Continue with Apple
+              </Text>
+            )}
           </AppButton>
 
-          <AppButton variant="outline" size="lg" block onClick={() => go('home')}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <GoogleMark />
-              <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>
-                Continue with Google
-              </Text>
-            </View>
+          <AppButton variant="outline" size="lg" block onClick={handleGoogleAuth} disabled={loading !== null}>
+            {loading === 'google' ? (
+              <ActivityIndicator color={theme.foreground} />
+            ) : (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <GoogleMark />
+                <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>
+                  Continue with Google
+                </Text>
+              </View>
+            )}
           </AppButton>
 
           <TouchableOpacity
-            onPress={() => go('home')}
+            onPress={loginAsGuest}
+            disabled={loading !== null}
+            activeOpacity={0.8}
             style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 8 }}
           >
             <Text style={{ fontSize: 15, fontWeight: '600', color: theme.mutedForeground }}>
