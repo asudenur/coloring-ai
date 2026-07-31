@@ -10,11 +10,13 @@ import { RotateCw, ScanFace } from 'lucide-react-native'
 const RATIOS = ['1:1', '4:5', '3:4', '9:16']
 
 export function CropScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, selectedPhoto } = useApp()
   const [ratio, setRatio] = useState('1:1')
   const [zoom, setZoom] = useState(1)
   const [rotate, setRotate] = useState(0)
   const [face, setFace] = useState(true)
+
+  const imageSource = selectedPhoto || ASSETS.photos.portrait
 
   return (
     <Screen
@@ -37,7 +39,7 @@ export function CropScreen() {
           }}
         >
           <Image
-            source={ASSETS.photos.portrait}
+            source={imageSource}
             style={{
               width: '100%',
               height: '100%',
@@ -83,7 +85,7 @@ export function CropScreen() {
                   paddingVertical: 4,
                 }}
               >
-                <Text style={{ fontSize: 10, fontWeight: '700', color: '#ffffff' }}>Face detected</Text>
+                <Text style={{ fontSize: 10, fontWeight: '700', color: '#ffffff' }}>Subject detected</Text>
               </View>
             </View>
           ) : null}
@@ -160,9 +162,9 @@ export function CropScreen() {
               <ScanFace size={20} color={theme.brand} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: theme.foreground }}>Auto detect face</Text>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: theme.foreground }}>Auto detect subject</Text>
               <Text style={{ fontSize: 12, color: theme.mutedForeground, marginTop: 2 }}>
-                Center crop on the subject
+                Center crop on the main subject
               </Text>
             </View>
             <Toggle on={face} />

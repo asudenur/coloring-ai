@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, type ReactNode } from 'reac
 import type { ScreenKey } from '@/lib/screens'
 import { LIGHT_THEME, DARK_THEME, type Theme } from '@/lib/theme'
 import { authenticateWithGoogle, authenticateWithApple } from '@/lib/auth'
+import { ASSETS } from '@/lib/assets'
 
 export type UserProfile = {
   id: string
@@ -24,6 +25,8 @@ type AppState = {
   theme: Theme
   selectedStyle: string
   setSelectedStyle: (id: string) => void
+  selectedPhoto: any
+  setSelectedPhoto: (photo: any) => void
   user: UserProfile | null
   loginWithApple: () => Promise<void>
   loginWithGoogle: () => Promise<void>
@@ -37,6 +40,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [screen, setScreen] = useState<ScreenKey>('splash')
   const [dark, setDark] = useState(false)
   const [selectedStyle, setSelectedStyle] = useState('general')
+  const [selectedPhoto, setSelectedPhoto] = useState<any>(ASSETS.photos.portrait)
   const [user, setUser] = useState<UserProfile | null>(null)
 
   const theme = dark ? DARK_THEME : LIGHT_THEME
@@ -90,6 +94,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         theme,
         selectedStyle,
         setSelectedStyle,
+        selectedPhoto,
+        setSelectedPhoto,
         user,
         loginWithApple,
         loginWithGoogle,

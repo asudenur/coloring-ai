@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Image, PanResponder } from 'react-native'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
 import { Screen } from '@/components/app/screen'
 import { ScreenHeader } from '@/components/app/phone-chrome'
 import { AppButton, IconButton } from '@/components/kit/button'
@@ -8,9 +8,11 @@ import { ASSETS } from '@/lib/assets'
 import { Heart, Share2, Maximize2, RefreshCw, FileImage, FileText, GripVertical } from 'lucide-react-native'
 
 export function ResultScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, selectedPhoto } = useApp()
   const [pos, setPos] = useState(55)
   const [fav, setFav] = useState(false)
+
+  const imageSource = selectedPhoto || ASSETS.photos.portrait
 
   return (
     <Screen
@@ -52,7 +54,7 @@ export function ResultScreen() {
         >
           <Image source={ASSETS.results.portraitLine} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
           <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: `${pos}%`, overflow: 'hidden' }}>
-            <Image source={ASSETS.photos.portrait} style={{ width: 350, height: '100%', resizeMode: 'cover' }} />
+            <Image source={imageSource} style={{ width: 350, height: '100%', resizeMode: 'cover' }} />
           </View>
           <View
             style={{

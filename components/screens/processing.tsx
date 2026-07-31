@@ -8,9 +8,11 @@ import { ASSETS } from '@/lib/assets'
 import { Sparkles, X } from 'lucide-react-native'
 
 export function ProcessingScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, selectedPhoto } = useApp()
   const [progress, setProgress] = useState(6)
   const [msg, setMsg] = useState(0)
+
+  const imageSource = selectedPhoto || ASSETS.photos.portrait
 
   useEffect(() => {
     const p = setInterval(() => {
@@ -60,7 +62,7 @@ export function ProcessingScreen() {
               elevation: 6,
             }}
           >
-            <Image source={ASSETS.photos.portrait} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+            <Image source={imageSource} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
           </View>
           <View
             style={{

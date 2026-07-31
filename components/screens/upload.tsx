@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TouchableOpacity, Image, Alert } from 'react-native'
+import * as ImagePicker from 'expo-image-picker'
 import { Screen } from '@/components/app/screen'
 import { ScreenHeader } from '@/components/app/phone-chrome'
 import { useApp } from '@/components/app/app-provider'
@@ -16,15 +17,60 @@ const RECENT = [
 ]
 
 export function UploadScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, setSelectedPhoto } = useApp()
+
+  const pickFromGallery = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        quality: 1,
+      })
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        setSelectedPhoto({ uri: result.assets[0].uri })
+        go('crop')
+      }
+    } catch (error) {
+      console.warn('Error picking image from gallery:', error)
+    }
+  }
+
+  const takePhotoWithCamera = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestCameraPermissionsAsync()
+      if (permissionResult.granted === false) {
+        Alert.alert('Permission Required', 'Camera permission is needed to take a photo.')
+        return
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        quality: 1,
+      })
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        setSelectedPhoto({ uri: result.assets[0].uri })
+        go('crop')
+      }
+    } catch (error) {
+      console.warn('Error taking photo with camera:', error)
+    }
+  }
+
+  const selectRecentPhoto = (photo: any) => {
+    setSelectedPhoto(photo)
+    go('crop')
+  }
 
   return (
     <Screen header={<ScreenHeader title="New Coloring Page" onBack={() => go('home')} />}>
       <View style={{ gap: 24, paddingBottom: 32 }}>
-        {/* Drop area */}
+        {/* Drop / Browse area */}
         <TouchableOpacity
           activeOpacity={0.85}
-          onPress={() => go('crop')}
+          onPress={pickFromGallery}
           style={{
             width: '100%',
             alignItems: 'center',
@@ -57,15 +103,15 @@ export function UploadScreen() {
             <UploadCloud size={32} color="#ffffff" strokeWidth={2} />
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: theme.foreground }}>Drag & drop your photo</Text>
-            <Text style={{ marginTop: 4, fontSize: 13, color: theme.mutedForeground }}>or tap to browse your library</Text>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: theme.foreground }}>Choose your photo</Text>
+            <Text style={{ marginTop: 4, fontSize: 13, color: theme.mutedForeground }}>Tap to browse device photo library</Text>
           </View>
         </TouchableOpacity>
 
         {/* Source buttons */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <SourceCard icon={Camera} label="Camera" onClick={() => go('crop')} />
-          <SourceCard icon={Images} label="Gallery" onClick={() => go('crop')} />
+          <SourceCard icon={Camera} label="Camera" onClick={takePhotoWithCamera} />
+          <SourceCard icon={Images} label="Gallery" onClick={pickFromGallery} />
         </View>
 
         {/* Recent photos */}
@@ -78,7 +124,7 @@ export function UploadScreen() {
               <TouchableOpacity
                 key={i}
                 activeOpacity={0.85}
-                onPress={() => go('crop')}
+                onPress={() => selectRecentPhoto(src)}
                 style={{
                   width: '31%',
                   aspectRatio: 1,
