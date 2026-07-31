@@ -1,18 +1,47 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import React, { useState, useMemo } from 'react'
+import { View, Text, Image, PanResponder, Alert } from 'react-native'
 import { Screen } from '@/components/app/screen'
 import { ScreenHeader } from '@/components/app/phone-chrome'
 import { AppButton, IconButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
 import { ASSETS } from '@/lib/assets'
-import { Heart, Share2, Maximize2, RefreshCw, FileImage, FileText, GripVertical } from 'lucide-react-native'
+import { Heart, Share2, Maximize2, RefreshCw, FileImage, FileText, GripVertical, CheckCircle2, Bookmark } from 'lucide-react-native'
 
 export function ResultScreen() {
   const { go, goBack, theme, selectedPhoto } = useApp()
-  const [pos, setPos] = useState(55)
+  const [pos, setPos] = useState(50)
   const [fav, setFav] = useState(false)
+  const [fullScreenMode, setFullScreenMode] = useState(false)
+  const [containerWidth, setContainerWidth] = useState(340)
 
   const imageSource = selectedPhoto || ASSETS.photos.portrait
+
+  const updatePositionFromTouch = (evt: any) => {
+    const touchX = evt.nativeEvent.locationX
+    if (containerWidth > 0 && typeof touchX === 'number') {
+      const newPercentage = Math.min(100, Math.max(0, (touchX / containerWidth) * 100))
+      setPos(newPercentage)
+    }
+  }
+
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderGrant: (evt) => updatePositionFromTouch(evt),
+        onPanResponderMove: (evt) => updatePositionFromTouch(evt),
+      }),
+    [containerWidth]
+  )
+
+  const handleDownloadPNG = () => {
+    Alert.alert('Saved!', 'PNG coloring page saved to your device photo gallery.')
+  }
+
+  const handleDownloadPDF = () => {
+    Alert.alert('Exported!', 'High-res PDF vector line art exported to downloads.')
+  }
 
   return (
     <Screen
@@ -25,7 +54,7 @@ export function ResultScreen() {
               <IconButton aria-label="Favorite" onClick={() => setFav((f) => !f)}>
                 <Heart size={20} color={theme.brand} fill={fav ? theme.brand : 'transparent'} strokeWidth={2} />
               </IconButton>
-              <IconButton aria-label="Fullscreen" onClick={() => go('success')}>
+              <IconButton aria-label="Toggle Zoom" onClick={() => setFullScreenMode((v) => !v)}>
                 <Maximize2 size={20} color={theme.foreground} strokeWidth={2} />
               </IconButton>
             </View>
@@ -34,12 +63,14 @@ export function ResultScreen() {
       }
     >
       <View style={{ gap: 20, paddingBottom: 32 }}>
-        {/* Before / After comparison */}
+        {/* Interactive Before / After comparison slider */}
         <View
+          {...panResponder.panHandlers}
+          onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
           style={{
             position: 'relative',
             width: '100%',
-            aspectRatio: 1,
+            aspectRatio: fullScreenMode ? 0.8 : 1,
             borderRadius: 24,
             borderWidth: 1,
             borderColor: theme.border,
@@ -52,10 +83,21 @@ export function ResultScreen() {
             elevation: 4,
           }}
         >
-          <Image source={ASSETS.results.portraitLine} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+          {/* After Image (Background) */}
+          <Image
+            source={ASSETS.results.portraitLine}
+            style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
+          />
+
+          {/* Before Image (Overlay clipped by pos %) */}
           <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: `${pos}%`, overflow: 'hidden' }}>
-            <Image source={imageSource} style={{ width: 350, height: '100%', resizeMode: 'cover' }} />
+            <Image
+              source={imageSource}
+              style={{ width: containerWidth, height: '100%', resizeMode: 'cover' }}
+            />
           </View>
+
+          {/* Vertical Divider handle line */}
           <View
             style={{
               position: 'absolute',
@@ -63,13 +105,16 @@ export function ResultScreen() {
               bottom: 0,
               left: `${pos}%`,
               width: 2,
+              marginLeft: -1,
               backgroundColor: '#ffffff',
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 0 },
-              shadowOpacity: 0.2,
-              shadowRadius: 4,
+              shadowOpacity: 0.3,
+              shadowRadius: 6,
+              elevation: 4,
             }}
           >
+            {/* Grab handle circle icon */}
             <View
               style={{
                 position: 'absolute',
@@ -85,15 +130,16 @@ export function ResultScreen() {
                 justifyContent: 'center',
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.14,
-                shadowRadius: 12,
+                shadowOpacity: 0.2,
+                shadowRadius: 10,
                 elevation: 6,
               }}
             >
-              <GripVertical size={16} color={theme.foreground} />
+              <GripVertical size={18} color={theme.foreground} />
             </View>
           </View>
 
+          {/* Badges */}
           <View
             style={{
               position: 'absolute',
@@ -103,6 +149,7 @@ export function ResultScreen() {
               backgroundColor: 'rgba(0,0,0,0.6)',
               paddingHorizontal: 10,
               paddingVertical: 4,
+              pointerEvents: 'none',
             }}
           >
             <Text style={{ fontSize: 11, fontWeight: '600', color: '#ffffff' }}>Before</Text>
@@ -117,6 +164,7 @@ export function ResultScreen() {
               backgroundColor: theme.brand,
               paddingHorizontal: 10,
               paddingVertical: 4,
+              pointerEvents: 'none',
             }}
           >
             <Text style={{ fontSize: 11, fontWeight: '600', color: '#ffffff' }}>After</Text>
@@ -125,13 +173,13 @@ export function ResultScreen() {
 
         {/* Download row */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <AppButton variant="secondary" size="md" style={{ flex: 1 }} onClick={() => go('success')}>
+          <AppButton variant="secondary" size="md" style={{ flex: 1 }} onClick={handleDownloadPNG}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <FileImage size={20} color={theme.secondaryForeground} />
               <Text style={{ fontSize: 15, fontWeight: '700', color: theme.secondaryForeground }}>PNG</Text>
             </View>
           </AppButton>
-          <AppButton variant="secondary" size="md" style={{ flex: 1 }} onClick={() => go('success')}>
+          <AppButton variant="secondary" size="md" style={{ flex: 1 }} onClick={handleDownloadPDF}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <FileText size={20} color={theme.secondaryForeground} />
               <Text style={{ fontSize: 15, fontWeight: '700', color: theme.secondaryForeground }}>PDF</Text>
@@ -139,17 +187,19 @@ export function ResultScreen() {
           </AppButton>
         </View>
 
+        {/* Primary Save & Complete Button */}
         <AppButton size="lg" block onClick={() => go('success')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Share2 size={20} color={theme.brandForeground} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.brandForeground }}>Share</Text>
+            <Bookmark size={20} color={theme.brandForeground} />
+            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.brandForeground }}>Save Coloring Page</Text>
           </View>
         </AppButton>
 
-        <AppButton variant="outline" size="lg" block onClick={() => go('processing')}>
+        {/* Try another style */}
+        <AppButton variant="outline" size="lg" block onClick={() => go('style')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <RefreshCw size={20} color={theme.foreground} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>Generate Again</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>Try Another Style</Text>
           </View>
         </AppButton>
       </View>

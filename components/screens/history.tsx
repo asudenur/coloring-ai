@@ -3,17 +3,17 @@ import { View, Text, TouchableOpacity, Image, TextInput, ScrollView } from 'reac
 import { Screen } from '@/components/app/screen'
 import { ScreenHeader } from '@/components/app/phone-chrome'
 import { useApp } from '@/components/app/app-provider'
-import { CREATIONS } from '@/lib/data'
-import { Search, SlidersHorizontal, Heart, ImageOff } from 'lucide-react-native'
+import { Search, SlidersHorizontal, Heart, ImageOff, Plus } from 'lucide-react-native'
+import { AppButton } from '@/components/kit/button'
 
 const FILTERS = ['All', 'Favorites', 'Portraits', 'Pets', 'Recent']
 
 export function HistoryScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, creations, toggleFavorite, setSelectedPhoto } = useApp()
   const [filter, setFilter] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredCreations = CREATIONS.filter((c) => {
+  const filteredCreations = creations.filter((c) => {
     // 1. Search Query Filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
@@ -34,7 +34,7 @@ export function HistoryScreen() {
       return c.category === 'Pets' || c.title.toLowerCase().includes('retriever') || c.title.toLowerCase().includes('dog')
     }
     if (filter === 'Recent') {
-      return c.date === 'Today'
+      return c.date === 'Just now' || c.date === 'Today'
     }
 
     return true // 'All'
@@ -120,8 +120,51 @@ export function HistoryScreen() {
           })}
         </ScrollView>
 
-        {/* Grid or Empty State */}
-        {filteredCreations.length === 0 ? (
+        {/* Dynamic Grid or Empty State */}
+        {creations.length === 0 ? (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingVertical: 56,
+              paddingHorizontal: 24,
+              gap: 16,
+              borderRadius: 26,
+              borderWidth: 1,
+              borderColor: theme.border,
+              backgroundColor: theme.secondary,
+              marginTop: 12,
+            }}
+          >
+            <View
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                backgroundColor: theme.card,
+                alignItems: 'center',
+                justifyContent: 'center',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 8,
+                elevation: 2,
+              }}
+            >
+              <ImageOff size={28} color={theme.mutedForeground} />
+            </View>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: theme.foreground }}>No creations yet</Text>
+            <Text style={{ fontSize: 14, color: theme.mutedForeground, textAlign: 'center', maxWidth: 260, lineHeight: 20 }}>
+              Your generated coloring pages will show up here. Start by uploading a photo!
+            </Text>
+            <AppButton size="md" onClick={() => go('upload')}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Plus size={18} color={theme.brandForeground} />
+                <Text style={{ fontSize: 14, fontWeight: '700', color: theme.brandForeground }}>Create first page</Text>
+              </View>
+            </AppButton>
+          </View>
+        ) : filteredCreations.length === 0 ? (
           <View
             style={{
               alignItems: 'center',
@@ -134,18 +177,6 @@ export function HistoryScreen() {
               backgroundColor: theme.secondary,
             }}
           >
-            <View
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                backgroundColor: theme.card,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <ImageOff size={24} color={theme.mutedForeground} />
-            </View>
             <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>No creations found</Text>
             <Text style={{ fontSize: 13, color: theme.mutedForeground }}>
               No items match your "{filter}" filter.
@@ -157,7 +188,10 @@ export function HistoryScreen() {
               <TouchableOpacity
                 key={c.id}
                 activeOpacity={0.85}
-                onPress={() => go('result')}
+                onPress={() => {
+                  setSelectedPhoto(c.photo)
+                  go('result')
+                }}
                 style={{
                   width: '48%',
                   borderRadius: 20,
@@ -173,29 +207,29 @@ export function HistoryScreen() {
                 }}
               >
                 <View style={{ position: 'relative', width: '100%', aspectRatio: 1 }}>
-                  <Image source={c.result} style={{ width: '100%', height: '100%', backgroundColor: '#ffffff', resizeMode: 'cover' }} />
-                  {c.favorite ? (
-                    <View
-                      style={{
-                        position: 'absolute',
-                        right: 8,
-                        top: 8,
-                        width: 28,
-                        height: 28,
-                        borderRadius: 14,
-                        backgroundColor: 'rgba(255,255,255,0.9)',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        shadowColor: '#000',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.1,
-                        shadowRadius: 4,
-                        elevation: 2,
-                      }}
-                    >
-                      <Heart size={14} color={theme.brand} fill={theme.brand} />
-                    </View>
-                  ) : null}
+                  <Image source={c.photo} style={{ width: '100%', height: '100%', backgroundColor: '#ffffff', resizeMode: 'cover' }} />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => toggleFavorite(c.id)}
+                    style={{
+                      position: 'absolute',
+                      right: 8,
+                      top: 8,
+                      width: 28,
+                      height: 28,
+                      borderRadius: 14,
+                      backgroundColor: 'rgba(255,255,255,0.9)',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 4,
+                      elevation: 2,
+                    }}
+                  >
+                    <Heart size={14} color={theme.brand} fill={c.favorite ? theme.brand : 'transparent'} />
+                  </TouchableOpacity>
                 </View>
                 <View style={{ padding: 12 }}>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: theme.foreground }}>{c.title}</Text>
