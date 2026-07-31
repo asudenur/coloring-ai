@@ -1,14 +1,35 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { StatusBar, HomeIndicator } from '@/components/app/phone-chrome'
 import { AppButton, IconButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
-import { ASSETS } from '@/lib/assets'
-import { X, Crown, Sparkles, Zap, ShieldCheck, Check } from 'lucide-react-native'
+import { X, Crown, Sparkles, Zap, ShieldCheck, CheckCircle2, Info } from 'lucide-react-native'
 
 export function PremiumScreen() {
-  const { go, goBack, theme } = useApp()
+  const { goBack, theme, user } = useApp()
   const [period, setPeriod] = useState<'yearly' | 'monthly'>('yearly')
+  const [restoring, setRestoring] = useState(false)
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
+
+  const handleRestore = () => {
+    setRestoring(true)
+    setStatusMessage(null)
+    setTimeout(() => {
+      setRestoring(false)
+      if (user?.isPremium) {
+        setStatusMessage('Your PRO Subscription is active and restored!')
+      } else {
+        setStatusMessage('No active prior subscriptions found for this account.')
+      }
+    }, 1200)
+  }
+
+  const handleStartTrial = () => {
+    setStatusMessage('🎉 PRO 3-Day Free Trial Activated!')
+    setTimeout(() => {
+      goBack()
+    }, 1200)
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
@@ -26,10 +47,40 @@ export function PremiumScreen() {
         <IconButton aria-label="Close" onClick={goBack}>
           <X size={20} color={theme.foreground} />
         </IconButton>
-        <TouchableOpacity onPress={() => go('success')}>
-          <Text style={{ fontSize: 13, fontWeight: '600', color: theme.mutedForeground }}>Restore</Text>
+        <TouchableOpacity onPress={handleRestore} disabled={restoring}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            {restoring ? <ActivityIndicator size="small" color={theme.brand} /> : null}
+            <Text style={{ fontSize: 13, fontWeight: '600', color: theme.brand }}>Restore</Text>
+          </View>
         </TouchableOpacity>
       </View>
+
+      {/* Restore Status Alert Banner */}
+      {statusMessage ? (
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginTop: 12,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+            borderRadius: 16,
+            backgroundColor: theme.brandSoft,
+            borderWidth: 1,
+            borderColor: theme.brand,
+            paddingHorizontal: 14,
+            paddingVertical: 12,
+          }}
+        >
+          <Info size={18} color={theme.brand} />
+          <Text style={{ flex: 1, fontSize: 13, fontWeight: '600', color: theme.foreground }}>
+            {statusMessage}
+          </Text>
+          <TouchableOpacity onPress={() => setStatusMessage(null)}>
+            <X size={16} color={theme.mutedForeground} />
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       <View style={{ flex: 1, paddingHorizontal: 24, justifyContent: 'space-between', paddingBottom: 24 }}>
         <View style={{ alignItems: 'center', marginTop: 12 }}>
@@ -87,7 +138,7 @@ export function PremiumScreen() {
             />
           </View>
 
-          <AppButton size="lg" block onClick={() => go('success')}>
+          <AppButton size="lg" block onClick={handleStartTrial}>
             Start 3-Day Free Trial
           </AppButton>
 
