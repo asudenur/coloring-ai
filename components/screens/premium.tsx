@@ -1,169 +1,178 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
-import { Screen } from '@/components/app/screen'
-import { IconButton, AppButton } from '@/components/kit/button'
-import { Badge } from '@/components/kit/primitives'
+import { View, Text, TouchableOpacity, Image } from 'react-native'
+import { StatusBar, HomeIndicator } from '@/components/app/phone-chrome'
+import { AppButton, IconButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
-import { Check, Crown, X, Infinity as InfinityIcon, Sparkles, Layers, Download } from 'lucide-react-native'
-
-const PLANS = [
-  { id: 'monthly', name: 'Monthly', price: '$9.99', per: '/month', note: 'Billed monthly' },
-  { id: 'yearly', name: 'Yearly', price: '$49.99', per: '/year', note: 'Save 58% · $4.16/mo', best: true },
-  { id: 'lifetime', name: 'Lifetime', price: '$99.99', per: 'once', note: 'Pay once, yours forever' },
-]
-
-const FEATURES = [
-  { icon: InfinityIcon, label: 'Unlimited coloring pages' },
-  { icon: Layers, label: 'All premium styles unlocked' },
-  { icon: Download, label: 'High-resolution PNG & PDF' },
-  { icon: Sparkles, label: 'Priority AI · no watermark' },
-]
+import { ASSETS } from '@/lib/assets'
+import { X, Crown, Sparkles, Zap, ShieldCheck, Check } from 'lucide-react-native'
 
 export function PremiumScreen() {
-  const { go, theme } = useApp()
-  const [plan, setPlan] = useState('yearly')
+  const { go, goBack, theme } = useApp()
+  const [period, setPeriod] = useState<'yearly' | 'monthly'>('yearly')
 
   return (
-    <Screen
-      bottomNav="premium"
-      darkChrome
-      padded={false}
-      header={
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 4 }}>
-          <IconButton variant="glass" aria-label="Close" onClick={() => go('home')} style={{ backgroundColor: 'rgba(255,255,255,0.12)' }}>
-            <X size={20} color="#ffffff" />
-          </IconButton>
-          <TouchableOpacity onPress={() => go('home')}>
-            <Text style={{ fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.7)' }}>Restore</Text>
-          </TouchableOpacity>
-        </View>
-      }
-      style={{ backgroundColor: theme.primary }}
-    >
-      <View style={{ paddingHorizontal: 20, paddingBottom: 100, paddingTop: 16 }}>
-        {/* Hero */}
-        <View style={{ alignItems: 'center' }}>
+    <View style={{ flex: 1, backgroundColor: theme.background }}>
+      <StatusBar />
+      {/* Top bar with close button */}
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 20,
+          paddingTop: 12,
+        }}
+      >
+        <IconButton aria-label="Close" onClick={goBack}>
+          <X size={20} color={theme.foreground} />
+        </IconButton>
+        <TouchableOpacity onPress={() => go('success')}>
+          <Text style={{ fontSize: 13, fontWeight: '600', color: theme.mutedForeground }}>Restore</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={{ flex: 1, paddingHorizontal: 24, justifyContent: 'space-between', paddingBottom: 24 }}>
+        <View style={{ alignItems: 'center', marginTop: 12 }}>
           <View
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: 20,
+              width: 72,
+              height: 72,
+              borderRadius: 24,
               backgroundColor: theme.brand,
               alignItems: 'center',
               justifyContent: 'center',
               shadowColor: theme.brand,
-              shadowOffset: { width: 0, height: 6 },
-              shadowOpacity: 0.35,
-              shadowRadius: 12,
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.3,
+              shadowRadius: 16,
               elevation: 6,
             }}
           >
-            <Crown size={32} color="#ffffff" />
+            <Crown size={36} color="#ffffff" strokeWidth={2} />
           </View>
-          <Text style={{ marginTop: 16, fontSize: 28, fontWeight: '800', color: '#ffffff', letterSpacing: -0.4 }}>
-            Coloring AI Premium
+
+          <Text style={{ marginTop: 20, fontSize: 28, fontWeight: '800', color: theme.foreground, letterSpacing: -0.4 }}>
+            Coloring AI PRO
           </Text>
-          <Text style={{ marginTop: 6, fontSize: 14, color: 'rgba(255,255,255,0.6)', textAlign: 'center' }}>
-            Unlock every style and create without limits.
+          <Text style={{ marginTop: 6, fontSize: 15, color: theme.mutedForeground, textAlign: 'center' }}>
+            Unlock unlimited HD generations and premium AI styles.
           </Text>
         </View>
 
-        {/* Features */}
-        <View style={{ marginTop: 24, flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          {FEATURES.map((f) => (
-            <View
-              key={f.label}
-              style={{
-                width: '48%',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10,
-                borderRadius: 16,
-                backgroundColor: 'rgba(255,255,255,0.06)',
-                padding: 12,
-              }}
-            >
-              <f.icon size={20} color={theme.brand} />
-              <Text style={{ flex: 1, fontSize: 12, fontWeight: '500', color: '#ffffff', lineHeight: 16 }}>{f.label}</Text>
-            </View>
-          ))}
+        {/* Benefits list */}
+        <View style={{ gap: 14, marginVertical: 20 }}>
+          <Benefit icon={Sparkles} title="Unlimited AI Generations" desc="Create as many coloring pages as you want" />
+          <Benefit icon={Crown} title="Exclusive AI Styles" desc="Access Anime, Comic, Pencil & Ultra-Detail" />
+          <Benefit icon={Zap} title="Lightning Fast Processing" desc="Priority queue with zero wait time" />
+          <Benefit icon={ShieldCheck} title="High-Res PDF Export" desc="Print-ready 300 DPI vector lines" />
         </View>
 
-        {/* Plans */}
-        <View style={{ marginTop: 24, gap: 12 }}>
-          {PLANS.map((p) => {
-            const active = plan === p.id
-            return (
-              <TouchableOpacity
-                key={p.id}
-                activeOpacity={0.85}
-                onPress={() => setPlan(p.id)}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 12,
-                  borderRadius: 20,
-                  borderWidth: active ? 2 : 1,
-                  borderColor: active ? theme.brand : 'rgba(255,255,255,0.15)',
-                  backgroundColor: active ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)',
-                  padding: 16,
-                }}
-              >
-                <View
-                  style={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: 12,
-                    borderWidth: 2,
-                    borderColor: active ? theme.brand : 'rgba(255,255,255,0.3)',
-                    backgroundColor: active ? theme.brand : 'transparent',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {active ? <Check size={14} color="#ffffff" strokeWidth={3} /> : null}
-                </View>
-                <View style={{ flex: 1 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: '#ffffff' }}>{p.name}</Text>
-                    {p.best ? (
-                      <Badge tone="brand" style={{ backgroundColor: theme.brand }}>
-                        <Text style={{ color: '#ffffff', fontSize: 10, fontWeight: '800' }}>BEST VALUE</Text>
-                      </Badge>
-                    ) : null}
-                  </View>
-                  <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>{p.note}</Text>
-                </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={{ fontSize: 16, fontWeight: '800', color: '#ffffff' }}>{p.price}</Text>
-                  <Text style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)' }}>{p.per}</Text>
-                </View>
-              </TouchableOpacity>
-            )
-          })}
+        {/* Plans selector */}
+        <View style={{ gap: 12 }}>
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+            <PlanCard
+              title="Yearly"
+              price="$3.99 / mo"
+              sub="$47.99 billed annually"
+              save="SAVE 50%"
+              active={period === 'yearly'}
+              onClick={() => setPeriod('yearly')}
+            />
+            <PlanCard
+              title="Monthly"
+              price="$7.99 / mo"
+              sub="Billed monthly"
+              active={period === 'monthly'}
+              onClick={() => setPeriod('monthly')}
+            />
+          </View>
+
+          <AppButton size="lg" block onClick={() => go('success')}>
+            Start 3-Day Free Trial
+          </AppButton>
+
+          <Text style={{ textAlign: 'center', fontSize: 11, color: theme.mutedForeground }}>
+            Cancel anytime in App Store settings. No commitment.
+          </Text>
         </View>
       </View>
+      <HomeIndicator />
+    </View>
+  )
+}
 
+function Benefit({ icon: Icon, title, desc }: { icon: any; title: string; desc: string }) {
+  const { theme } = useApp()
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
       <View
         style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          backgroundColor: theme.primary,
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(255,255,255,0.1)',
-          paddingHorizontal: 20,
-          paddingVertical: 16,
+          width: 40,
+          height: 40,
+          borderRadius: 14,
+          backgroundColor: theme.brandSoft,
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        <AppButton size="lg" block onClick={() => go('success')}>
-          Continue · {PLANS.find((p) => p.id === plan)?.price}
-        </AppButton>
-        <Text style={{ marginTop: 8, textAlign: 'center', fontSize: 11, color: 'rgba(255,255,255,0.45)' }}>
-          Cancel anytime · Terms apply
-        </Text>
+        <Icon size={20} color={theme.brand} />
       </View>
-    </Screen>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 15, fontWeight: '700', color: theme.foreground }}>{title}</Text>
+        <Text style={{ fontSize: 12, color: theme.mutedForeground, marginTop: 1 }}>{desc}</Text>
+      </View>
+    </View>
+  )
+}
+
+function PlanCard({
+  title,
+  price,
+  sub,
+  save,
+  active,
+  onClick,
+}: {
+  title: string
+  price: string
+  sub: string
+  save?: string
+  active: boolean
+  onClick: () => void
+}) {
+  const { theme } = useApp()
+  return (
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={onClick}
+      style={{
+        flex: 1,
+        borderRadius: 20,
+        borderWidth: active ? 2 : 1,
+        borderColor: active ? theme.brand : theme.border,
+        backgroundColor: active ? theme.brandSoft : theme.card,
+        padding: 16,
+        position: 'relative',
+      }}
+    >
+      {save ? (
+        <View
+          style={{
+            position: 'absolute',
+            top: -10,
+            right: 12,
+            backgroundColor: theme.brand,
+            borderRadius: 999,
+            paddingHorizontal: 8,
+            paddingVertical: 2,
+          }}
+        >
+          <Text style={{ fontSize: 9, fontWeight: '800', color: '#ffffff' }}>{save}</Text>
+        </View>
+      ) : null}
+      <Text style={{ fontSize: 14, fontWeight: '700', color: theme.foreground }}>{title}</Text>
+      <Text style={{ fontSize: 18, fontWeight: '800', color: theme.foreground, marginTop: 4 }}>{price}</Text>
+      <Text style={{ fontSize: 11, color: theme.mutedForeground, marginTop: 2 }}>{sub}</Text>
+    </TouchableOpacity>
   )
 }

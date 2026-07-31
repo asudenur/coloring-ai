@@ -9,10 +9,10 @@ import { STYLES } from '@/lib/data'
 import { Check, Crown } from 'lucide-react-native'
 
 export function StyleScreen() {
-  const { go, selectedStyle, setSelectedStyle, theme } = useApp()
+  const { go, goBack, selectedStyle, setSelectedStyle, theme } = useApp()
 
   return (
-    <Screen header={<ScreenHeader title="Choose a Style" onBack={() => go('crop')} />}>
+    <Screen header={<ScreenHeader title="Choose a Style" onBack={goBack} />}>
       <View style={{ gap: 16, paddingBottom: 100 }}>
         <Text style={{ fontSize: 14, color: theme.mutedForeground, paddingHorizontal: 4 }}>
           Pick how your coloring page should look. You can regenerate anytime.

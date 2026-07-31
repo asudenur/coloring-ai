@@ -21,13 +21,13 @@ const USAGE = [
 ]
 
 export function CreditsScreen() {
-  const { go, theme, user } = useApp()
+  const { go, goBack, theme, user } = useApp()
 
   const credits = user ? user.credits : 10
   const pagesCount = Math.floor(credits / 2)
 
   return (
-    <Screen header={<ScreenHeader title="AI Credits" onBack={() => go('profile')} />}>
+    <Screen header={<ScreenHeader title="AI Credits" onBack={goBack} />}>
       <View style={{ gap: 24, paddingBottom: 40 }}>
         {/* Balance card */}
         <Card style={{ backgroundColor: theme.primary, padding: 24, alignItems: 'center' }}>
