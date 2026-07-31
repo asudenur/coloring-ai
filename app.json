@@ -3,6 +3,7 @@
     "name": "Coloring AI",
     "slug": "coloring-ai",
     "version": "1.0.0",
+    "sdkVersion": "54.0.0",
     "orientation": "portrait",
     "icon": "./public/icon-dark-32x32.png",
     "userInterfaceStyle": "automatic",
@@ -12,12 +13,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#0b0b0f"
     },
+
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./public/placeholder-logo.png",
+        "foregroundImage": "./public/icon-dark-32x32.png",
         "backgroundColor": "#0b0b0f"
       }
     },
