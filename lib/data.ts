@@ -28,15 +28,16 @@ export type Creation = {
   photo: ImageSourcePropType
   result: ImageSourcePropType
   favorite?: boolean
+  category?: string
 }
 
 export const CREATIONS: Creation[] = [
-  { id: '1', title: 'Curly Portrait', style: 'General', date: 'Today', photo: ASSETS.photos.portrait, result: ASSETS.results.portraitLine, favorite: true },
-  { id: '2', title: 'Golden Retriever', style: 'Detailed', date: 'Today', photo: ASSETS.photos.dog, result: ASSETS.results.dogLine },
-  { id: '3', title: 'Rose Bouquet', style: 'Minimal', date: 'Yesterday', photo: ASSETS.photos.flowers, result: ASSETS.results.flowersLine, favorite: true },
-  { id: '4', title: 'Curly Portrait', style: 'Sketch', date: 'Mar 12', photo: ASSETS.photos.portrait, result: ASSETS.results.portraitLine },
-  { id: '5', title: 'Golden Retriever', style: 'Comic', date: 'Mar 11', photo: ASSETS.photos.dog, result: ASSETS.results.dogLine },
-  { id: '6', title: 'Rose Bouquet', style: 'Kids', date: 'Mar 9', photo: ASSETS.photos.flowers, result: ASSETS.results.flowersLine },
+  { id: '1', title: 'Curly Portrait', style: 'General', date: 'Today', photo: ASSETS.photos.portrait, result: ASSETS.results.portraitLine, favorite: true, category: 'Portraits' },
+  { id: '2', title: 'Golden Retriever', style: 'Detailed', date: 'Today', photo: ASSETS.photos.dog, result: ASSETS.results.dogLine, category: 'Pets' },
+  { id: '3', title: 'Rose Bouquet', style: 'Minimal', date: 'Yesterday', photo: ASSETS.photos.flowers, result: ASSETS.results.flowersLine, favorite: true, category: 'Flowers' },
+  { id: '4', title: 'Curly Portrait', style: 'Sketch', date: 'Mar 12', photo: ASSETS.photos.portrait, result: ASSETS.results.portraitLine, category: 'Portraits' },
+  { id: '5', title: 'Golden Retriever', style: 'Comic', date: 'Mar 11', photo: ASSETS.photos.dog, result: ASSETS.results.dogLine, category: 'Pets' },
+  { id: '6', title: 'Rose Bouquet', style: 'Kids', date: 'Mar 9', photo: ASSETS.photos.flowers, result: ASSETS.results.flowersLine, category: 'Flowers' },
 ]
 
 export const PROCESSING_MESSAGES = [
