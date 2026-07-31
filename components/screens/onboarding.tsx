@@ -134,7 +134,7 @@ function OnboardVisual({ kind }: { kind: string }) {
               borderRadius: 22,
               borderWidth: 1,
               borderColor: theme.border,
-              backgroundColor: '#ffffff',
+              backgroundColor: theme.paper,
               overflow: 'hidden',
             }}
           >
@@ -153,7 +153,7 @@ function OnboardVisual({ kind }: { kind: string }) {
           borderRadius: 26,
           borderWidth: 1,
           borderColor: theme.border,
-          backgroundColor: '#ffffff',
+          backgroundColor: theme.paper,
           overflow: 'hidden',
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 8 },
@@ -196,7 +196,7 @@ function Framed({ src, label }: { src: any; label: string }) {
           borderRadius: 22,
           borderWidth: 1,
           borderColor: theme.border,
-          backgroundColor: '#ffffff',
+          backgroundColor: theme.paper,
           overflow: 'hidden',
         }}
       >

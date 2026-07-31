@@ -207,7 +207,7 @@ export function HistoryScreen() {
                 }}
               >
                 <View style={{ position: 'relative', width: '100%', aspectRatio: 1 }}>
-                  <Image source={c.photo} style={{ width: '100%', height: '100%', backgroundColor: '#ffffff', resizeMode: 'cover' }} />
+                  <Image source={c.photo} style={{ width: '100%', height: '100%', backgroundColor: theme.paper, resizeMode: 'cover' }} />
                   <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => toggleFavorite(c.id)}
@@ -218,7 +218,7 @@ export function HistoryScreen() {
                       width: 28,
                       height: 28,
                       borderRadius: 14,
-                      backgroundColor: 'rgba(255,255,255,0.9)',
+                      backgroundColor: theme.card,
                       alignItems: 'center',
                       justifyContent: 'center',
                       shadowColor: '#000',

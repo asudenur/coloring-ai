@@ -41,7 +41,7 @@ export function StyleScreen() {
                 }}
               >
                 <View style={{ position: 'relative', width: '100%', aspectRatio: 1 }}>
-                  <Image source={s.image} style={{ width: '100%', height: '100%', backgroundColor: '#ffffff', resizeMode: 'cover' }} />
+                  <Image source={s.image} style={{ width: '100%', height: '100%', backgroundColor: theme.paper, resizeMode: 'cover' }} />
                   {s.pro ? (
                     <View style={{ position: 'absolute', left: 8, top: 8 }}>
                       <Badge tone="dark" style={{ backgroundColor: theme.primary }}>

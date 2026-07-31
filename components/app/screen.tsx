@@ -24,15 +24,15 @@ export function Screen({
 }) {
   const { theme, dark } = useApp()
 
-  const isDarkChrome = darkChrome ?? dark
+  const backgroundColor = darkChrome ? theme.primary : theme.background
 
   return (
-    <View style={[{ flex: 1, backgroundColor: isDarkChrome ? theme.primary : theme.background }, style]}>
-      <StatusBar dark={isDarkChrome} />
+    <View style={[{ flex: 1, backgroundColor }, style]}>
+      <StatusBar dark={darkChrome ?? dark} />
       {header}
       {scroll ? (
         <ScrollView
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor }}
           contentContainerStyle={[
             padded && { paddingHorizontal: 20 },
             bottomNav && { paddingBottom: 8 },
@@ -45,7 +45,7 @@ export function Screen({
       ) : (
         <View
           style={[
-            { flex: 1 },
+            { flex: 1, backgroundColor },
             padded && { paddingHorizontal: 20 },
             bottomNav && { paddingBottom: 8 },
           ]}
@@ -54,7 +54,7 @@ export function Screen({
         </View>
       )}
       {bottomNav ? <BottomNav active={bottomNav} /> : null}
-      <HomeIndicator dark={isDarkChrome} />
+      <HomeIndicator dark={darkChrome ?? dark} />
     </View>
   )
 }

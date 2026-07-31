@@ -4,12 +4,14 @@ import { StatusBar, HomeIndicator } from '@/components/app/phone-chrome'
 import { AppButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
 import { ASSETS } from '@/lib/assets'
+import { cropPreviewSize } from '@/lib/crop'
 import { Check, History, Home } from 'lucide-react-native'
 
 export function SuccessScreen() {
-  const { go, theme, selectedPhoto } = useApp()
+  const { go, theme, selectedPhoto, cropRatio } = useApp()
 
   const imageSource = selectedPhoto || ASSETS.photos.portrait
+  const preview = cropPreviewSize(cropRatio, 160)
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
@@ -49,7 +51,7 @@ export function SuccessScreen() {
             borderRadius: 24,
             borderWidth: 1,
             borderColor: theme.border,
-            backgroundColor: '#ffffff',
+            backgroundColor: theme.paper,
             overflow: 'hidden',
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 8 },
@@ -58,7 +60,10 @@ export function SuccessScreen() {
             elevation: 6,
           }}
         >
-          <Image source={imageSource} style={{ width: 160, height: 160, resizeMode: 'cover' }} />
+          <Image
+            source={imageSource}
+            style={{ width: preview.width, height: preview.height, resizeMode: 'cover' }}
+          />
         </View>
       </View>
 
