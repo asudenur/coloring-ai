@@ -6,7 +6,7 @@ import { IconButton } from '@/components/kit/button'
 import { Card, Badge, SectionTitle } from '@/components/kit/primitives'
 import { useApp } from '@/components/app/app-provider'
 import { ASSETS } from '@/lib/assets'
-import { Bell, Camera, ImagePlus, Wand2, ScanFace, Crown, ArrowRight, User as UserIcon, LucideIcon, ImageOff, Plus } from 'lucide-react-native'
+import { Bell, Camera, ImagePlus, Wand2, Crown, ArrowRight, User as UserIcon, LucideIcon, ImageOff, Plus } from 'lucide-react-native'
 
 export function HomeScreen() {
   const { go, theme, user, creations, setSelectedPhoto } = useApp()
@@ -112,7 +112,6 @@ export function HomeScreen() {
         {/* Quick actions */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
           <QuickCard icon={Camera} label="Camera" hint="Snap & convert" onClick={() => go('upload')} />
-          <QuickCard icon={ScanFace} label="Face Detect" hint="Auto crop" onClick={() => go('crop')} />
         </View>
 
         {/* AI feature cards */}
@@ -143,7 +142,7 @@ export function HomeScreen() {
                   elevation: 2,
                 }}
               >
-                <Image source={f.s} style={{ width: 140, height: 140, backgroundColor: '#ffffff', resizeMode: 'cover' }} />
+                <Image source={f.s} style={{ width: 140, height: 140, backgroundColor: theme.paper, resizeMode: 'cover' }} />
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 10 }}>
                   <Text style={{ fontSize: 14, fontWeight: '600', color: theme.foreground }}>{f.t}</Text>
                   <Wand2 size={16} color={theme.brand} />
@@ -208,7 +207,7 @@ export function HomeScreen() {
                     borderRadius: 18,
                     borderWidth: 1,
                     borderColor: theme.border,
-                    backgroundColor: '#ffffff',
+                    backgroundColor: theme.paper,
                     overflow: 'hidden',
                   }}
                 >

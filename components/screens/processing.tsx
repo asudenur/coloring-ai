@@ -5,14 +5,16 @@ import { AppButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
 import { PROCESSING_MESSAGES } from '@/lib/data'
 import { ASSETS } from '@/lib/assets'
+import { cropPreviewSize } from '@/lib/crop'
 import { Sparkles, X } from 'lucide-react-native'
 
 export function ProcessingScreen() {
-  const { go, theme, selectedPhoto, selectedStyle, addCreation } = useApp()
+  const { go, theme, selectedPhoto, selectedStyle, addCreation, cropRatio } = useApp()
   const [progress, setProgress] = useState(6)
   const [msg, setMsg] = useState(0)
 
   const imageSource = selectedPhoto || ASSETS.photos.portrait
+  const preview = cropPreviewSize(cropRatio, 160)
 
   useEffect(() => {
     const p = setInterval(() => {
@@ -57,15 +59,23 @@ export function ProcessingScreen() {
       <StatusBar />
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
         {/* Animated preview container */}
-        <View style={{ position: 'relative', width: 208, height: 208, alignItems: 'center', justifyContent: 'center' }}>
+        <View
+          style={{
+            position: 'relative',
+            width: preview.width + 48,
+            height: preview.height + 48,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <View
             style={{
-              width: 160,
-              height: 160,
+              width: preview.width,
+              height: preview.height,
               borderRadius: 30,
               borderWidth: 1,
               borderColor: theme.border,
-              backgroundColor: '#ffffff',
+              backgroundColor: theme.paper,
               overflow: 'hidden',
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 8 },

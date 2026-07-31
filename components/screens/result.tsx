@@ -5,16 +5,18 @@ import { ScreenHeader } from '@/components/app/phone-chrome'
 import { AppButton, IconButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
 import { ASSETS } from '@/lib/assets'
+import { cropRatioToNumber } from '@/lib/crop'
 import { Heart, Share2, Maximize2, RefreshCw, FileImage, FileText, GripVertical, CheckCircle2, Bookmark } from 'lucide-react-native'
 
 export function ResultScreen() {
-  const { go, goBack, theme, selectedPhoto } = useApp()
+  const { go, goBack, theme, selectedPhoto, cropRatio } = useApp()
   const [pos, setPos] = useState(50)
   const [fav, setFav] = useState(false)
   const [fullScreenMode, setFullScreenMode] = useState(false)
   const [containerWidth, setContainerWidth] = useState(340)
 
   const imageSource = selectedPhoto || ASSETS.photos.portrait
+  const aspectRatio = cropRatioToNumber(cropRatio)
 
   const updatePositionFromTouch = (evt: any) => {
     const touchX = evt.nativeEvent.locationX
@@ -70,11 +72,12 @@ export function ResultScreen() {
           style={{
             position: 'relative',
             width: '100%',
-            aspectRatio: fullScreenMode ? 0.8 : 1,
+            aspectRatio,
+            ...(fullScreenMode ? { minHeight: aspectRatio < 1 ? 520 : 360 } : {}),
             borderRadius: 24,
             borderWidth: 1,
             borderColor: theme.border,
-            backgroundColor: '#ffffff',
+            backgroundColor: theme.paper,
             overflow: 'hidden',
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 4 },
@@ -106,7 +109,7 @@ export function ResultScreen() {
               left: `${pos}%`,
               width: 2,
               marginLeft: -1,
-              backgroundColor: '#ffffff',
+              backgroundColor: theme.paper,
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 0 },
               shadowOpacity: 0.3,
@@ -125,7 +128,7 @@ export function ResultScreen() {
                 width: 36,
                 height: 36,
                 borderRadius: 18,
-                backgroundColor: '#ffffff',
+                backgroundColor: theme.paper,
                 alignItems: 'center',
                 justifyContent: 'center',
                 shadowColor: '#000',
@@ -146,7 +149,7 @@ export function ResultScreen() {
               left: 12,
               top: 12,
               borderRadius: 999,
-              backgroundColor: 'rgba(0,0,0,0.6)',
+              backgroundColor: theme.overlay,
               paddingHorizontal: 10,
               paddingVertical: 4,
               pointerEvents: 'none',

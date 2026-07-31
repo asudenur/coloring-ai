@@ -19,6 +19,9 @@ export type Theme = {
   border: string
   input: string
   ring: string
+  paper: string
+  overlay: string
+  toggleThumb: string
 }
 
 export const LIGHT_THEME: Theme = {
@@ -42,6 +45,9 @@ export const LIGHT_THEME: Theme = {
   border: '#ececee',
   input: '#f0f0f2',
   ring: 'rgba(34, 197, 94, 0.4)',
+  paper: '#ffffff',
+  overlay: 'rgba(0, 0, 0, 0.6)',
+  toggleThumb: '#ffffff',
 }
 
 export const DARK_THEME: Theme = {
@@ -65,4 +71,7 @@ export const DARK_THEME: Theme = {
   border: '#262629',
   input: '#202023',
   ring: 'rgba(34, 197, 94, 0.5)',
+  paper: '#ffffff',
+  overlay: 'rgba(0, 0, 0, 0.65)',
+  toggleThumb: '#ffffff',
 }

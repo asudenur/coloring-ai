@@ -138,7 +138,7 @@ function ToggleRow({ icon, label, on, onToggle, last }: { icon: LucideIcon; labe
             width: 24,
             height: 24,
             borderRadius: 12,
-            backgroundColor: '#ffffff',
+            backgroundColor: theme.toggleThumb,
             transform: [{ translateX: on ? 20 : 0 }],
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 2 },

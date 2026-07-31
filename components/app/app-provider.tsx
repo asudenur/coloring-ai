@@ -4,6 +4,7 @@ import { LIGHT_THEME, DARK_THEME, type Theme } from '@/lib/theme'
 import { authenticateWithGoogle, authenticateWithApple } from '@/lib/auth'
 import { ASSETS } from '@/lib/assets'
 import type { Creation } from '@/lib/data'
+import type { CropRatio } from '@/lib/crop'
 
 export type UserProfile = {
   id: string
@@ -29,6 +30,8 @@ type AppState = {
   setSelectedStyle: (id: string) => void
   selectedPhoto: any
   setSelectedPhoto: (photo: any) => void
+  cropRatio: CropRatio
+  setCropRatio: (ratio: CropRatio) => void
   user: UserProfile | null
   creations: Creation[]
   addCreation: (item: Creation) => void
@@ -46,6 +49,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [dark, setDark] = useState(false)
   const [selectedStyle, setSelectedStyle] = useState('general')
   const [selectedPhoto, setSelectedPhoto] = useState<any>(ASSETS.photos.portrait)
+  const [cropRatio, setCropRatio] = useState<CropRatio>('1:1')
   const [user, setUser] = useState<UserProfile | null>(null)
   const [creations, setCreations] = useState<Creation[]>([])
 
@@ -146,6 +150,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setSelectedStyle,
         selectedPhoto,
         setSelectedPhoto,
+        cropRatio,
+        setCropRatio,
         user,
         creations,
         addCreation,

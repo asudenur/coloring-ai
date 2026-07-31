@@ -113,9 +113,16 @@ export function IconButton({
   onClick?: () => void
   onPress?: () => void
 } & TouchableOpacityProps) {
-  const { theme } = useApp()
+  const { theme, dark } = useApp()
 
-  const bg = variant === 'glass' ? 'rgba(255,255,255,0.12)' : variant === 'secondary' ? theme.secondary : 'transparent'
+  const bg =
+    variant === 'glass'
+      ? dark
+        ? 'rgba(255,255,255,0.12)'
+        : 'rgba(0,0,0,0.05)'
+      : variant === 'secondary'
+        ? theme.secondary
+        : 'transparent'
   const border = variant === 'outline' ? theme.border : undefined
 
   return (
