@@ -1,16 +1,17 @@
 import React, { useState, useMemo } from 'react'
-import { View, Text, Image, PanResponder } from 'react-native'
+import { View, Text, Image, PanResponder, Alert } from 'react-native'
 import { Screen } from '@/components/app/screen'
 import { ScreenHeader } from '@/components/app/phone-chrome'
 import { AppButton, IconButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
 import { ASSETS } from '@/lib/assets'
-import { Heart, Share2, Maximize2, RefreshCw, FileImage, FileText, GripVertical } from 'lucide-react-native'
+import { Heart, Share2, Maximize2, RefreshCw, FileImage, FileText, GripVertical, CheckCircle2, Bookmark } from 'lucide-react-native'
 
 export function ResultScreen() {
   const { go, goBack, theme, selectedPhoto } = useApp()
   const [pos, setPos] = useState(50)
   const [fav, setFav] = useState(false)
+  const [fullScreenMode, setFullScreenMode] = useState(false)
   const [containerWidth, setContainerWidth] = useState(340)
 
   const imageSource = selectedPhoto || ASSETS.photos.portrait
@@ -34,6 +35,14 @@ export function ResultScreen() {
     [containerWidth]
   )
 
+  const handleDownloadPNG = () => {
+    Alert.alert('Saved!', 'PNG coloring page saved to your device photo gallery.')
+  }
+
+  const handleDownloadPDF = () => {
+    Alert.alert('Exported!', 'High-res PDF vector line art exported to downloads.')
+  }
+
   return (
     <Screen
       header={
@@ -45,7 +54,7 @@ export function ResultScreen() {
               <IconButton aria-label="Favorite" onClick={() => setFav((f) => !f)}>
                 <Heart size={20} color={theme.brand} fill={fav ? theme.brand : 'transparent'} strokeWidth={2} />
               </IconButton>
-              <IconButton aria-label="Fullscreen" onClick={() => go('success')}>
+              <IconButton aria-label="Toggle Zoom" onClick={() => setFullScreenMode((v) => !v)}>
                 <Maximize2 size={20} color={theme.foreground} strokeWidth={2} />
               </IconButton>
             </View>
@@ -61,7 +70,7 @@ export function ResultScreen() {
           style={{
             position: 'relative',
             width: '100%',
-            aspectRatio: 1,
+            aspectRatio: fullScreenMode ? 0.8 : 1,
             borderRadius: 24,
             borderWidth: 1,
             borderColor: theme.border,
@@ -164,13 +173,13 @@ export function ResultScreen() {
 
         {/* Download row */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <AppButton variant="secondary" size="md" style={{ flex: 1 }} onClick={() => go('success')}>
+          <AppButton variant="secondary" size="md" style={{ flex: 1 }} onClick={handleDownloadPNG}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <FileImage size={20} color={theme.secondaryForeground} />
               <Text style={{ fontSize: 15, fontWeight: '700', color: theme.secondaryForeground }}>PNG</Text>
             </View>
           </AppButton>
-          <AppButton variant="secondary" size="md" style={{ flex: 1 }} onClick={() => go('success')}>
+          <AppButton variant="secondary" size="md" style={{ flex: 1 }} onClick={handleDownloadPDF}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <FileText size={20} color={theme.secondaryForeground} />
               <Text style={{ fontSize: 15, fontWeight: '700', color: theme.secondaryForeground }}>PDF</Text>
@@ -178,17 +187,19 @@ export function ResultScreen() {
           </AppButton>
         </View>
 
+        {/* Primary Save & Complete Button */}
         <AppButton size="lg" block onClick={() => go('success')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Share2 size={20} color={theme.brandForeground} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.brandForeground }}>Share</Text>
+            <Bookmark size={20} color={theme.brandForeground} />
+            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.brandForeground }}>Save Coloring Page</Text>
           </View>
         </AppButton>
 
-        <AppButton variant="outline" size="lg" block onClick={() => go('processing')}>
+        {/* Try another style */}
+        <AppButton variant="outline" size="lg" block onClick={() => go('style')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <RefreshCw size={20} color={theme.foreground} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>Generate Again</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>Try Another Style</Text>
           </View>
         </AppButton>
       </View>

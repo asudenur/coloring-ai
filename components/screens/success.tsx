@@ -4,10 +4,12 @@ import { StatusBar, HomeIndicator } from '@/components/app/phone-chrome'
 import { AppButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
 import { ASSETS } from '@/lib/assets'
-import { Check, Share2, Download } from 'lucide-react-native'
+import { Check, History, Home } from 'lucide-react-native'
 
 export function SuccessScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, selectedPhoto } = useApp()
+
+  const imageSource = selectedPhoto || ASSETS.photos.portrait
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background }}>
@@ -56,20 +58,20 @@ export function SuccessScreen() {
             elevation: 6,
           }}
         >
-          <Image source={ASSETS.results.portraitLine} style={{ width: 160, height: 160, resizeMode: 'cover' }} />
+          <Image source={imageSource} style={{ width: 160, height: 160, resizeMode: 'cover' }} />
         </View>
       </View>
 
       <View style={{ gap: 12, paddingHorizontal: 24, paddingBottom: 16 }}>
         <AppButton size="lg" block onClick={() => go('history')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Share2 size={20} color={theme.brandForeground} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.brandForeground }}>Share Now</Text>
+            <History size={20} color={theme.brandForeground} />
+            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.brandForeground }}>View in History</Text>
           </View>
         </AppButton>
-        <AppButton variant="outline" size="lg" block onClick={() => go('home')}>
+        <AppButton variant="outline" size="lg" block onClick={() => go('home', { resetStack: true })}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Download size={20} color={theme.foreground} />
+            <Home size={20} color={theme.foreground} />
             <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>Back to Home</Text>
           </View>
         </AppButton>

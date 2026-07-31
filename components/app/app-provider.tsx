@@ -3,6 +3,7 @@ import type { ScreenKey } from '@/lib/screens'
 import { LIGHT_THEME, DARK_THEME, type Theme } from '@/lib/theme'
 import { authenticateWithGoogle, authenticateWithApple } from '@/lib/auth'
 import { ASSETS } from '@/lib/assets'
+import type { Creation } from '@/lib/data'
 
 export type UserProfile = {
   id: string
@@ -29,6 +30,9 @@ type AppState = {
   selectedPhoto: any
   setSelectedPhoto: (photo: any) => void
   user: UserProfile | null
+  creations: Creation[]
+  addCreation: (item: Creation) => void
+  toggleFavorite: (id: string) => void
   loginWithApple: () => Promise<void>
   loginWithGoogle: () => Promise<void>
   loginAsGuest: () => void
@@ -43,6 +47,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [selectedStyle, setSelectedStyle] = useState('general')
   const [selectedPhoto, setSelectedPhoto] = useState<any>(ASSETS.photos.portrait)
   const [user, setUser] = useState<UserProfile | null>(null)
+  const [creations, setCreations] = useState<Creation[]>([])
 
   const screen = historyStack[historyStack.length - 1] || 'home'
   const theme = dark ? DARK_THEME : LIGHT_THEME
@@ -61,8 +66,31 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const goBack = () => {
     setHistoryStack((prev) => {
       if (prev.length <= 1) return ['home']
-      return prev.slice(0, -1)
+      const newStack = prev.slice(0, -1)
+      // Skip loading/processing screen when going back
+      if (newStack[newStack.length - 1] === 'processing') {
+        return newStack.length > 1 ? newStack.slice(0, -1) : ['home']
+      }
+      return newStack
     })
+  }
+
+  const addCreation = (item: Creation) => {
+    setCreations((prev) => [item, ...prev])
+    setUser((u) => {
+      if (!u) return null
+      return {
+        ...u,
+        creationsCount: u.creationsCount + 1,
+        credits: Math.max(0, u.credits - 2),
+      }
+    })
+  }
+
+  const toggleFavorite = (id: string) => {
+    setCreations((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, favorite: !c.favorite } : c))
+    )
   }
 
   const loginWithApple = async () => {
@@ -101,6 +129,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null)
+    setCreations([])
     go('login', { resetStack: true })
   }
 
@@ -118,6 +147,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         selectedPhoto,
         setSelectedPhoto,
         user,
+        creations,
+        addCreation,
+        toggleFavorite,
         loginWithApple,
         loginWithGoogle,
         loginAsGuest,

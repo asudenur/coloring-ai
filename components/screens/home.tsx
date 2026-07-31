@@ -5,12 +5,11 @@ import { ScreenHeader } from '@/components/app/phone-chrome'
 import { IconButton } from '@/components/kit/button'
 import { Card, Badge, SectionTitle } from '@/components/kit/primitives'
 import { useApp } from '@/components/app/app-provider'
-import { CREATIONS } from '@/lib/data'
 import { ASSETS } from '@/lib/assets'
-import { Bell, Camera, ImagePlus, Wand2, ScanFace, Crown, ArrowRight, User as UserIcon, LucideIcon } from 'lucide-react-native'
+import { Bell, Camera, ImagePlus, Wand2, ScanFace, Crown, ArrowRight, User as UserIcon, LucideIcon, ImageOff, Plus } from 'lucide-react-native'
 
 export function HomeScreen() {
-  const { go, theme, user } = useApp()
+  const { go, theme, user, creations, setSelectedPhoto } = useApp()
 
   const displayName = user ? user.name : 'Guest User'
   const avatarSource = user?.avatar || ASSETS.photos.portrait
@@ -157,26 +156,67 @@ export function HomeScreen() {
         {/* Recent creations */}
         <View style={{ gap: 12 }}>
           <SectionTitle title="Recent creations" action="History" onAction={() => go('history')} />
-          <View style={{ flexDirection: 'row', gap: 12 }}>
-            {CREATIONS.slice(0, 3).map((c) => (
-              <TouchableOpacity
-                key={c.id}
-                activeOpacity={0.85}
-                onPress={() => go('result')}
+          {creations.length === 0 ? (
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={() => go('upload')}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 14,
+                borderRadius: 20,
+                borderWidth: 1,
+                borderColor: theme.border,
+                borderStyle: 'dashed',
+                backgroundColor: theme.secondary,
+                padding: 16,
+              }}
+            >
+              <View
                 style={{
-                  flex: 1,
-                  aspectRatio: 1,
-                  borderRadius: 18,
-                  borderWidth: 1,
-                  borderColor: theme.border,
-                  backgroundColor: '#ffffff',
-                  overflow: 'hidden',
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  backgroundColor: theme.card,
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                <Image source={c.result} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
-              </TouchableOpacity>
-            ))}
-          </View>
+                <ImageOff size={20} color={theme.mutedForeground} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: theme.foreground }}>No creations yet</Text>
+                <Text style={{ fontSize: 12, color: theme.mutedForeground, marginTop: 2 }}>
+                  Tap here to upload a photo & create your first page
+                </Text>
+              </View>
+              <Plus size={20} color={theme.brand} />
+            </TouchableOpacity>
+          ) : (
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              {creations.slice(0, 3).map((c) => (
+                <TouchableOpacity
+                  key={c.id}
+                  activeOpacity={0.85}
+                  onPress={() => {
+                    setSelectedPhoto(c.photo)
+                    go('result')
+                  }}
+                  style={{
+                    flex: 1,
+                    aspectRatio: 1,
+                    borderRadius: 18,
+                    borderWidth: 1,
+                    borderColor: theme.border,
+                    backgroundColor: '#ffffff',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <Image source={c.photo} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
         </View>
 
         {/* Premium banner */}

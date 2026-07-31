@@ -8,7 +8,7 @@ import { ASSETS } from '@/lib/assets'
 import { Sparkles, X } from 'lucide-react-native'
 
 export function ProcessingScreen() {
-  const { go, theme, selectedPhoto } = useApp()
+  const { go, theme, selectedPhoto, selectedStyle, addCreation } = useApp()
   const [progress, setProgress] = useState(6)
   const [msg, setMsg] = useState(0)
 
@@ -33,10 +33,22 @@ export function ProcessingScreen() {
 
   useEffect(() => {
     if (progress >= 100) {
+      const styleName = selectedStyle.charAt(0).toUpperCase() + selectedStyle.slice(1)
+      addCreation({
+        id: `c_${Date.now()}`,
+        title: `Coloring Page #${Math.floor(100 + Math.random() * 900)}`,
+        style: styleName,
+        date: 'Just now',
+        photo: imageSource,
+        result: ASSETS.results.portraitLine,
+        favorite: false,
+        category: 'Portraits',
+      })
+
       const t = setTimeout(() => go('result'), 700)
       return () => clearTimeout(t)
     }
-  }, [progress, go])
+  }, [progress])
 
   const remaining = Math.max(0, Math.ceil((100 - progress) / 12))
 
