@@ -4,7 +4,7 @@ import { Screen } from '@/components/app/screen'
 import { ScreenHeader } from '@/components/app/phone-chrome'
 import { AppButton } from '@/components/kit/button'
 import { useApp } from '@/components/app/app-provider'
-import { ImageOff, WifiOff, HeartOff, TriangleAlert, RefreshCw, LifeBuoy, LucideIcon } from 'lucide-react-native'
+import { ImageOff, WifiOff, HeartOff, TriangleAlert, RefreshCw, LifeBuoy } from 'lucide-react-native'
 
 const EMPTY_TABS = [
   { id: 'history', label: 'No History', icon: ImageOff, title: 'No creations yet', body: 'Your generated coloring pages will show up here. Start by uploading a photo.', cta: 'Create your first page' },
@@ -13,13 +13,13 @@ const EMPTY_TABS = [
 ]
 
 export function EmptyScreen() {
-  const { go, theme } = useApp()
+  const { go, goBack, theme } = useApp()
   const [tab, setTab] = useState('history')
   const current = EMPTY_TABS.find((t) => t.id === tab)!
   const Icon = current.icon
 
   return (
-    <Screen header={<ScreenHeader title="Empty States" onBack={() => go('home')} />}>
+    <Screen header={<ScreenHeader title="Empty States" onBack={goBack} />}>
       <View style={{ gap: 24, paddingBottom: 32 }}>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {EMPTY_TABS.map((t) => (
@@ -94,10 +94,10 @@ export function EmptyScreen() {
 }
 
 export function ErrorScreen() {
-  const { go, theme } = useApp()
+  const { go, goBack, theme } = useApp()
 
   return (
-    <Screen header={<ScreenHeader title="Something went wrong" onBack={() => go('style')} />} scroll={false}>
+    <Screen header={<ScreenHeader title="Something went wrong" onBack={goBack} />} scroll={false}>
       <View style={{ flex: 1, justifyContent: 'space-between' }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 }}>
           <View

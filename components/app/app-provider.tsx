@@ -19,7 +19,8 @@ export type UserProfile = {
 
 type AppState = {
   screen: ScreenKey
-  go: (screen: ScreenKey) => void
+  go: (targetScreen: ScreenKey, options?: { resetStack?: boolean }) => void
+  goBack: () => void
   dark: boolean
   toggleDark: () => void
   theme: Theme
@@ -37,19 +38,38 @@ type AppState = {
 const AppContext = createContext<AppState | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [screen, setScreen] = useState<ScreenKey>('splash')
+  const [historyStack, setHistoryStack] = useState<ScreenKey[]>(['splash'])
   const [dark, setDark] = useState(false)
   const [selectedStyle, setSelectedStyle] = useState('general')
   const [selectedPhoto, setSelectedPhoto] = useState<any>(ASSETS.photos.portrait)
   const [user, setUser] = useState<UserProfile | null>(null)
 
+  const screen = historyStack[historyStack.length - 1] || 'home'
   const theme = dark ? DARK_THEME : LIGHT_THEME
+
+  const go = (targetScreen: ScreenKey, options?: { resetStack?: boolean }) => {
+    if (options?.resetStack) {
+      setHistoryStack([targetScreen])
+    } else {
+      setHistoryStack((prev) => {
+        if (prev[prev.length - 1] === targetScreen) return prev
+        return [...prev, targetScreen]
+      })
+    }
+  }
+
+  const goBack = () => {
+    setHistoryStack((prev) => {
+      if (prev.length <= 1) return ['home']
+      return prev.slice(0, -1)
+    })
+  }
 
   const loginWithApple = async () => {
     const profile = await authenticateWithApple()
     if (profile) {
       setUser(profile)
-      setScreen('home')
+      go('home', { resetStack: true })
     }
   }
 
@@ -57,7 +77,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const profile = await authenticateWithGoogle()
     if (profile) {
       setUser(profile)
-      setScreen('home')
+      go('home', { resetStack: true })
     }
   }
 
@@ -76,19 +96,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
       downloadsCount: 0,
     }
     setUser(newUser)
-    setScreen('home')
+    go('home', { resetStack: true })
   }
 
   const logout = () => {
     setUser(null)
-    setScreen('login')
+    go('login', { resetStack: true })
   }
 
   return (
     <AppContext.Provider
       value={{
         screen,
-        go: setScreen,
+        go,
+        goBack,
         dark,
         toggleDark: () => setDark((d) => !d),
         theme,

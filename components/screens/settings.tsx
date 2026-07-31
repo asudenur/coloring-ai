@@ -6,11 +6,11 @@ import { useApp } from '@/components/app/app-provider'
 import { Moon, Globe, Bell, ShieldCheck, FileText, ChevronRight, Trash2, LucideIcon } from 'lucide-react-native'
 
 export function SettingsScreen() {
-  const { go, dark, toggleDark, theme } = useApp()
+  const { goBack, dark, toggleDark, theme } = useApp()
   const [notifs, setNotifs] = useState(true)
 
   return (
-    <Screen header={<ScreenHeader title="Settings" onBack={() => go('profile')} />}>
+    <Screen header={<ScreenHeader title="Settings" onBack={goBack} />}>
       <View style={{ gap: 24, paddingBottom: 40 }}>
         <Group title="Appearance">
           <ToggleRow icon={Moon} label="Dark Mode" on={dark} onToggle={toggleDark} />

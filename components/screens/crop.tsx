@@ -10,7 +10,7 @@ import { RotateCw, ScanFace } from 'lucide-react-native'
 const RATIOS = ['1:1', '4:5', '3:4', '9:16']
 
 export function CropScreen() {
-  const { go, theme, selectedPhoto } = useApp()
+  const { go, goBack, theme, selectedPhoto } = useApp()
   const [ratio, setRatio] = useState('1:1')
   const [zoom, setZoom] = useState(1)
   const [rotate, setRotate] = useState(0)
@@ -20,7 +20,7 @@ export function CropScreen() {
 
   return (
     <Screen
-      header={<ScreenHeader title="Crop & Adjust" onBack={() => go('upload')} />}
+      header={<ScreenHeader title="Crop & Adjust" onBack={goBack} />}
       padded={false}
       scroll={false}
     >

@@ -17,7 +17,7 @@ const RECENT = [
 ]
 
 export function UploadScreen() {
-  const { go, theme, setSelectedPhoto } = useApp()
+  const { go, goBack, theme, setSelectedPhoto } = useApp()
 
   const pickFromGallery = async () => {
     try {
@@ -65,7 +65,7 @@ export function UploadScreen() {
   }
 
   return (
-    <Screen header={<ScreenHeader title="New Coloring Page" onBack={() => go('home')} />}>
+    <Screen header={<ScreenHeader title="New Coloring Page" onBack={goBack} />}>
       <View style={{ gap: 24, paddingBottom: 32 }}>
         {/* Drop / Browse area */}
         <TouchableOpacity

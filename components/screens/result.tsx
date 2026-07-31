@@ -8,7 +8,7 @@ import { ASSETS } from '@/lib/assets'
 import { Heart, Share2, Maximize2, RefreshCw, FileImage, FileText, GripVertical } from 'lucide-react-native'
 
 export function ResultScreen() {
-  const { go, theme, selectedPhoto } = useApp()
+  const { go, goBack, theme, selectedPhoto } = useApp()
   const [pos, setPos] = useState(55)
   const [fav, setFav] = useState(false)
 
@@ -19,7 +19,7 @@ export function ResultScreen() {
       header={
         <ScreenHeader
           title="Your Coloring Page"
-          onBack={() => go('style')}
+          onBack={goBack}
           right={
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <IconButton aria-label="Favorite" onClick={() => setFav((f) => !f)}>
