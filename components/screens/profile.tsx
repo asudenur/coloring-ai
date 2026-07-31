@@ -9,19 +9,24 @@ import { Crown, Coins, Download, Sparkles, Settings, LifeBuoy, ShieldCheck, Chev
 import type { ScreenKey } from '@/lib/screens'
 
 export function ProfileScreen() {
-  const { go, theme, user, logout } = useApp()
+  const { go, theme, user, logout, t } = useApp()
 
-  const name = user ? user.name : 'Guest User'
+  const name = user ? user.name : t('common.guestUser')
   const email = user ? user.email : 'guest@coloring.ai'
-  const providerLabel = user?.provider === 'apple' ? 'Apple ID' : user?.provider === 'google' ? 'Google Account' : 'Guest Account'
+  const providerLabel =
+    user?.provider === 'apple'
+      ? t('profile.appleId')
+      : user?.provider === 'google'
+        ? t('profile.googleAccount')
+        : t('profile.guestAccount')
   const credits = user ? user.credits : 10
   const creations = user ? user.creationsCount : 0
   const downloads = user ? user.downloadsCount : 0
-  const planName = user ? user.planName : 'Guest Mode'
+  const planName = user ? user.planName : t('profile.guestMode')
   const isPremium = user?.isPremium || false
 
   return (
-    <Screen bottomNav="profile" header={<ScreenHeader title="Profile" large />}>
+    <Screen bottomNav="profile" header={<ScreenHeader title={t('profile.title')} large />}>
       <View style={{ gap: 20, paddingBottom: 110 }}>
         {/* Identity */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
@@ -51,7 +56,7 @@ export function ProfileScreen() {
               {isPremium ? (
                 <Badge tone="brand">
                   <Crown size={12} color={theme.brand} />
-                  <Text style={{ color: theme.brand, fontSize: 11, fontWeight: '700', marginLeft: 2 }}>PRO</Text>
+                  <Text style={{ color: theme.brand, fontSize: 11, fontWeight: '700', marginLeft: 2 }}>{t('common.pro')}</Text>
                 </Badge>
               ) : (
                 <Badge tone="neutral">
@@ -65,9 +70,9 @@ export function ProfileScreen() {
 
         {/* Stats */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <Stat icon={Sparkles} value={String(creations)} label="Creations" />
-          <Stat icon={Download} value={String(downloads)} label="Downloads" />
-          <Stat icon={Coins} value={String(credits)} label="Credits" />
+          <Stat icon={Sparkles} value={String(creations)} label={t('profile.creations')} />
+          <Stat icon={Download} value={String(downloads)} label={t('profile.downloads')} />
+          <Stat icon={Coins} value={String(credits)} label={t('profile.credits')} />
         </View>
 
         {/* Subscription card */}
@@ -75,11 +80,11 @@ export function ProfileScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <View>
               <Text style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: 0.8, color: theme.primaryForeground, opacity: 0.5 }}>
-                Current plan
+                {t('profile.currentPlan')}
               </Text>
               <Text style={{ fontSize: 19, fontWeight: '700', color: theme.primaryForeground, marginTop: 2 }}>{planName}</Text>
               <Text style={{ fontSize: 12, color: theme.primaryForeground, opacity: 0.6, marginTop: 2 }}>
-                {isPremium ? 'Renews Mar 24, 2026' : 'Upgrade for unlimited access'}
+                {isPremium ? t('profile.renews') : t('profile.upgradeHint')}
               </Text>
             </View>
             <TouchableOpacity
@@ -91,7 +96,7 @@ export function ProfileScreen() {
                 paddingVertical: 8,
               }}
             >
-              <Text style={{ fontSize: 13, fontWeight: '700', color: '#ffffff' }}>Manage</Text>
+              <Text style={{ fontSize: 13, fontWeight: '700', color: '#ffffff' }}>{t('profile.manage')}</Text>
             </TouchableOpacity>
           </View>
         </Card>
@@ -106,11 +111,11 @@ export function ProfileScreen() {
             overflow: 'hidden',
           }}
         >
-          <Row icon={Coins} label="AI Credits" hint={`${credits} left`} to="credits" go={go} />
-          <Row icon={Crown} label="Subscription" to="premium" go={go} />
-          <Row icon={Settings} label="Settings" to="settings" go={go} />
-          <Row icon={LifeBuoy} label="Support" to="settings" go={go} />
-          <Row icon={ShieldCheck} label="Privacy" to="settings" go={go} last />
+          <Row icon={Coins} label={t('profile.aiCredits')} hint={t('profile.creditsLeft', { count: credits })} to="credits" go={go} />
+          <Row icon={Crown} label={t('profile.subscription')} to="premium" go={go} />
+          <Row icon={Settings} label={t('settings.title')} to="settings" go={go} />
+          <Row icon={LifeBuoy} label={t('profile.support')} to="settings" go={go} />
+          <Row icon={ShieldCheck} label={t('profile.privacy')} to="settings" go={go} last />
         </View>
 
         <TouchableOpacity
@@ -129,7 +134,7 @@ export function ProfileScreen() {
           }}
         >
           <LogOut size={18} color={theme.destructive} />
-          <Text style={{ fontSize: 15, fontWeight: '700', color: theme.destructive }}>Sign Out</Text>
+          <Text style={{ fontSize: 15, fontWeight: '700', color: theme.destructive }}>{t('profile.signOut')}</Text>
         </TouchableOpacity>
       </View>
     </Screen>

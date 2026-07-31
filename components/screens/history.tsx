@@ -6,12 +6,17 @@ import { useApp } from '@/components/app/app-provider'
 import { Search, SlidersHorizontal, Heart, ImageOff, Plus } from 'lucide-react-native'
 import { AppButton } from '@/components/kit/button'
 
-const FILTERS = ['All', 'Favorites', 'Portraits', 'Pets', 'Recent']
+import { getHistoryFilterKeys } from '@/lib/i18n'
 
 export function HistoryScreen() {
-  const { go, theme, creations, toggleFavorite, setSelectedPhoto } = useApp()
+  const { go, theme, creations, toggleFavorite, setSelectedPhoto, t } = useApp()
   const [filter, setFilter] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
+
+  const filters = getHistoryFilterKeys().map((f) => ({
+    key: f.key,
+    label: t(f.labelKey),
+  }))
 
   const filteredCreations = creations.filter((c) => {
     // 1. Search Query Filter
@@ -43,7 +48,7 @@ export function HistoryScreen() {
   return (
     <Screen
       bottomNav="history"
-      header={<ScreenHeader title="History" large subtitle="All your coloring pages in one place" />}
+      header={<ScreenHeader title={t('history.title')} large subtitle={t('history.subtitle')} />}
     >
       <View style={{ gap: 16, paddingBottom: 110 }}>
         {/* Search */}
@@ -62,7 +67,7 @@ export function HistoryScreen() {
           >
             <Search size={20} color={theme.mutedForeground} />
             <TextInput
-              placeholder="Search creations"
+              placeholder={t('history.searchPlaceholder')}
               placeholderTextColor={theme.mutedForeground}
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -90,13 +95,13 @@ export function HistoryScreen() {
 
         {/* Filter chips */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
-          {FILTERS.map((f) => {
-            const active = filter === f
+          {filters.map((f) => {
+            const active = filter === f.key
             return (
               <TouchableOpacity
-                key={f}
+                key={f.key}
                 activeOpacity={0.8}
-                onPress={() => setFilter(f)}
+                onPress={() => setFilter(f.key)}
                 style={{
                   height: 36,
                   borderRadius: 18,
@@ -113,7 +118,7 @@ export function HistoryScreen() {
                     color: active ? theme.primaryForeground : theme.mutedForeground,
                   }}
                 >
-                  {f}
+                  {f.label}
                 </Text>
               </TouchableOpacity>
             )
@@ -153,14 +158,14 @@ export function HistoryScreen() {
             >
               <ImageOff size={28} color={theme.mutedForeground} />
             </View>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: theme.foreground }}>No creations yet</Text>
+            <Text style={{ fontSize: 18, fontWeight: '700', color: theme.foreground }}>{t('history.noCreations')}</Text>
             <Text style={{ fontSize: 14, color: theme.mutedForeground, textAlign: 'center', maxWidth: 260, lineHeight: 20 }}>
-              Your generated coloring pages will show up here. Start by uploading a photo!
+              {t('history.noCreationsHint')}
             </Text>
             <AppButton size="md" onClick={() => go('upload')}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <Plus size={18} color={theme.brandForeground} />
-                <Text style={{ fontSize: 14, fontWeight: '700', color: theme.brandForeground }}>Create first page</Text>
+                <Text style={{ fontSize: 14, fontWeight: '700', color: theme.brandForeground }}>{t('history.createFirst')}</Text>
               </View>
             </AppButton>
           </View>
@@ -177,9 +182,9 @@ export function HistoryScreen() {
               backgroundColor: theme.secondary,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>No creations found</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>{t('history.noResults')}</Text>
             <Text style={{ fontSize: 13, color: theme.mutedForeground }}>
-              No items match your "{filter}" filter.
+              {t('history.noResultsHint', { filter: filters.find((f) => f.key === filter)?.label ?? filter })}
             </Text>
           </View>
         ) : (

@@ -8,19 +8,22 @@ import { useApp } from '@/components/app/app-provider'
 import { STYLES } from '@/lib/data'
 import { Check, Crown } from 'lucide-react-native'
 
+import { getStyleTranslation } from '@/lib/i18n'
+
 export function StyleScreen() {
-  const { go, goBack, selectedStyle, setSelectedStyle, theme } = useApp()
+  const { go, goBack, selectedStyle, setSelectedStyle, theme, locale, t } = useApp()
 
   return (
-    <Screen header={<ScreenHeader title="Choose a Style" onBack={goBack} />}>
+    <Screen header={<ScreenHeader title={t('style.title')} onBack={goBack} />}>
       <View style={{ gap: 16, paddingBottom: 100 }}>
         <Text style={{ fontSize: 14, color: theme.mutedForeground, paddingHorizontal: 4 }}>
-          Pick how your coloring page should look. You can regenerate anytime.
+          {t('style.hint')}
         </Text>
 
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
           {STYLES.map((s) => {
             const active = selectedStyle === s.id
+            const localized = getStyleTranslation(locale, s.id)
             return (
               <TouchableOpacity
                 key={s.id}
@@ -46,7 +49,7 @@ export function StyleScreen() {
                     <View style={{ position: 'absolute', left: 8, top: 8 }}>
                       <Badge tone="dark" style={{ backgroundColor: theme.primary }}>
                         <Crown size={12} color={theme.primaryForeground} />
-                        <Text style={{ fontSize: 11, fontWeight: '700', color: theme.primaryForeground, marginLeft: 2 }}>PRO</Text>
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: theme.primaryForeground, marginLeft: 2 }}>{t('common.pro')}</Text>
                       </Badge>
                     </View>
                   ) : null}
@@ -69,9 +72,9 @@ export function StyleScreen() {
                   ) : null}
                 </View>
                 <View style={{ padding: 12 }}>
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: theme.foreground }}>{s.name}</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: theme.foreground }}>{localized.name}</Text>
                   <Text style={{ fontSize: 12, color: theme.mutedForeground, marginTop: 2, lineHeight: 16 }}>
-                    {s.description}
+                    {localized.description}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -94,7 +97,7 @@ export function StyleScreen() {
         }}
       >
         <AppButton size="lg" block onClick={() => go('processing')}>
-          Generate Coloring Page
+          {t('style.generate')}
         </AppButton>
       </View>
     </Screen>

@@ -6,30 +6,31 @@ import { useApp } from '@/components/app/app-provider'
 import { ASSETS } from '@/lib/assets'
 import { Wand2, Palette, Share2 } from 'lucide-react-native'
 
-const PAGES = [
-  {
-    icon: Wand2,
-    title: 'Turn Any Photo Into A Coloring Book',
-    body: 'Upload a photo and our AI redraws it into clean, printable line art in seconds.',
-    visual: 'transform',
-  },
-  {
-    icon: Palette,
-    title: 'Choose From Multiple Drawing Styles',
-    body: 'General, detailed, anime, sketch, comic and more — preview before you generate.',
-    visual: 'styles',
-  },
-  {
-    icon: Share2,
-    title: 'Download, Print & Share',
-    body: 'Export crisp PNG or PDF pages, print at home or share with friends and family.',
-    visual: 'share',
-  },
-]
-
 export function OnboardingScreen() {
-  const { go, theme } = useApp()
+  const { go, theme, t } = useApp()
   const [page, setPage] = useState(0)
+
+  const PAGES = [
+    {
+      icon: Wand2,
+      title: t('onboarding.page1Title'),
+      body: t('onboarding.page1Body'),
+      visual: 'transform',
+    },
+    {
+      icon: Palette,
+      title: t('onboarding.page2Title'),
+      body: t('onboarding.page2Body'),
+      visual: 'styles',
+    },
+    {
+      icon: Share2,
+      title: t('onboarding.page3Title'),
+      body: t('onboarding.page3Body'),
+      visual: 'share',
+    },
+  ]
+
   const current = PAGES[page]
   const last = page === PAGES.length - 1
 
@@ -38,7 +39,7 @@ export function OnboardingScreen() {
       <StatusBar />
       <View style={{ alignItems: 'flex-end', paddingHorizontal: 20, paddingVertical: 4 }}>
         <TouchableOpacity onPress={() => go('login')}>
-          <Text style={{ fontSize: 14, fontWeight: '600', color: theme.mutedForeground }}>Skip</Text>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: theme.mutedForeground }}>{t('common.skip')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -84,7 +85,7 @@ export function OnboardingScreen() {
           block
           onClick={() => (last ? go('login') : setPage((p) => p + 1))}
         >
-          {last ? 'Get Started' : 'Continue'}
+          {last ? t('common.getStarted') : t('common.continue')}
         </AppButton>
       </View>
       <HomeIndicator />
@@ -93,12 +94,12 @@ export function OnboardingScreen() {
 }
 
 function OnboardVisual({ kind }: { kind: string }) {
-  const { theme } = useApp()
+  const { theme, t } = useApp()
 
   if (kind === 'transform') {
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
-        <Framed src={ASSETS.photos.portrait} label="Photo" />
+        <Framed src={ASSETS.photos.portrait} label={t('onboarding.photo')} />
         <View
           style={{
             width: 44,
@@ -116,7 +117,7 @@ function OnboardVisual({ kind }: { kind: string }) {
         >
           <Wand2 size={20} color="#ffffff" />
         </View>
-        <Framed src={ASSETS.results.portraitLine} label="Coloring page" />
+        <Framed src={ASSETS.results.portraitLine} label={t('onboarding.coloringPage')} />
       </View>
     )
   }

@@ -4,15 +4,15 @@ import { Home, Images, Crown, User, Plus, LucideIcon } from 'lucide-react-native
 import { useApp } from '@/components/app/app-provider'
 import type { ScreenKey } from '@/lib/screens'
 
-const items: { key: ScreenKey; label: string; icon: LucideIcon }[] = [
-  { key: 'home', label: 'Home', icon: Home },
-  { key: 'history', label: 'History', icon: Images },
-  { key: 'premium', label: 'Premium', icon: Crown },
-  { key: 'profile', label: 'Profile', icon: User },
+const items: { key: ScreenKey; labelKey: string; icon: LucideIcon }[] = [
+  { key: 'home', labelKey: 'nav.home', icon: Home },
+  { key: 'history', labelKey: 'nav.history', icon: Images },
+  { key: 'premium', labelKey: 'nav.premium', icon: Crown },
+  { key: 'profile', labelKey: 'nav.profile', icon: User },
 ]
 
 export function BottomNav({ active }: { active: ScreenKey }) {
-  const { go, theme } = useApp()
+  const { go, theme, t } = useApp()
 
   return (
     <View style={{ position: 'relative', paddingHorizontal: 16, paddingBottom: 4 }}>
@@ -61,11 +61,11 @@ export function BottomNav({ active }: { active: ScreenKey }) {
         }}
       >
         {items.slice(0, 2).map((it) => (
-          <NavItem key={it.key} label={it.label} icon={it.icon} active={active === it.key} onClick={() => go(it.key)} />
+          <NavItem key={it.key} label={t(it.labelKey)} icon={it.icon} active={active === it.key} onClick={() => go(it.key)} />
         ))}
         <View style={{ width: 64 }} />
         {items.slice(2).map((it) => (
-          <NavItem key={it.key} label={it.label} icon={it.icon} active={active === it.key} onClick={() => go(it.key)} />
+          <NavItem key={it.key} label={t(it.labelKey)} icon={it.icon} active={active === it.key} onClick={() => go(it.key)} />
         ))}
       </View>
     </View>

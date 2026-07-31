@@ -1,29 +1,43 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Modal, Pressable } from 'react-native'
 import { Screen } from '@/components/app/screen'
 import { ScreenHeader } from '@/components/app/phone-chrome'
 import { useApp } from '@/components/app/app-provider'
-import { Moon, Globe, Bell, ShieldCheck, FileText, ChevronRight, Trash2, LucideIcon } from 'lucide-react-native'
+import { LOCALES, getLocaleLabel, type Locale } from '@/lib/i18n'
+import { Moon, Globe, Bell, ShieldCheck, FileText, ChevronRight, Trash2, LucideIcon, Check } from 'lucide-react-native'
 
 export function SettingsScreen() {
-  const { goBack, dark, toggleDark, theme } = useApp()
+  const { goBack, dark, toggleDark, theme, locale, setLocale, t } = useApp()
   const [notifs, setNotifs] = useState(true)
+  const [languageOpen, setLanguageOpen] = useState(false)
 
   return (
-    <Screen header={<ScreenHeader title="Settings" onBack={goBack} />}>
+    <Screen header={<ScreenHeader title={t('settings.title')} onBack={goBack} />}>
       <View style={{ gap: 24, paddingBottom: 40 }}>
-        <Group title="Appearance">
-          <ToggleRow icon={Moon} label="Dark Mode" on={dark} onToggle={toggleDark} />
-          <LinkRow icon={Globe} label="Language" hint="English" onClick={() => {}} last />
+        <Group title={t('settings.appearance')}>
+          <ToggleRow icon={Moon} label={t('settings.darkMode')} on={dark} onToggle={toggleDark} />
+          <LinkRow
+            icon={Globe}
+            label={t('settings.language')}
+            hint={getLocaleLabel(locale)}
+            onClick={() => setLanguageOpen(true)}
+            last
+          />
         </Group>
 
-        <Group title="Notifications">
-          <ToggleRow icon={Bell} label="Push Notifications" on={notifs} onToggle={() => setNotifs((v) => !v)} last />
+        <Group title={t('settings.notifications')}>
+          <ToggleRow
+            icon={Bell}
+            label={t('settings.pushNotifications')}
+            on={notifs}
+            onToggle={() => setNotifs((v) => !v)}
+            last
+          />
         </Group>
 
-        <Group title="Legal">
-          <LinkRow icon={ShieldCheck} label="Privacy Policy" onClick={() => {}} />
-          <LinkRow icon={FileText} label="Terms of Service" onClick={() => {}} last />
+        <Group title={t('settings.legal')}>
+          <LinkRow icon={ShieldCheck} label={t('settings.privacyPolicy')} onClick={() => {}} />
+          <LinkRow icon={FileText} label={t('settings.termsOfService')} onClick={() => {}} last />
         </Group>
 
         <TouchableOpacity
@@ -52,13 +66,71 @@ export function SettingsScreen() {
           >
             <Trash2 size={20} color={theme.destructive} />
           </View>
-          <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: theme.destructive }}>Delete Account</Text>
+          <Text style={{ flex: 1, fontSize: 15, fontWeight: '600', color: theme.destructive }}>
+            {t('settings.deleteAccount')}
+          </Text>
         </TouchableOpacity>
 
         <Text style={{ textAlign: 'center', fontSize: 12, color: theme.mutedForeground }}>
-          Coloring AI · Version 2.4.0
+          {t('settings.version')}
         </Text>
       </View>
+
+      <Modal visible={languageOpen} transparent animationType="fade" onRequestClose={() => setLanguageOpen(false)}>
+        <Pressable
+          style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' }}
+          onPress={() => setLanguageOpen(false)}
+        >
+          <Pressable
+            style={{
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              backgroundColor: theme.card,
+              paddingHorizontal: 20,
+              paddingTop: 20,
+              paddingBottom: 32,
+            }}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <Text style={{ fontSize: 17, fontWeight: '700', color: theme.foreground, marginBottom: 16 }}>
+              {t('settings.selectLanguage')}
+            </Text>
+            {LOCALES.map((item, index) => {
+              const selected = locale === item.code
+              const last = index === LOCALES.length - 1
+              return (
+                <TouchableOpacity
+                  key={item.code}
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    setLocale(item.code as Locale)
+                    setLanguageOpen(false)
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingVertical: 14,
+                    borderBottomWidth: last ? 0 : 1,
+                    borderBottomColor: theme.border,
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: selected ? '700' : '500',
+                      color: selected ? theme.brand : theme.foreground,
+                    }}
+                  >
+                    {item.label}
+                  </Text>
+                  {selected ? <Check size={20} color={theme.brand} strokeWidth={2.5} /> : null}
+                </TouchableOpacity>
+              )
+            })}
+          </Pressable>
+        </Pressable>
+      </Modal>
     </Screen>
   )
 }

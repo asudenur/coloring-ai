@@ -9,7 +9,7 @@ import { cropRatioToNumber } from '@/lib/crop'
 import { Heart, Share2, Maximize2, RefreshCw, FileImage, FileText, GripVertical, CheckCircle2, Bookmark } from 'lucide-react-native'
 
 export function ResultScreen() {
-  const { go, goBack, theme, selectedPhoto, cropRatio } = useApp()
+  const { go, goBack, theme, selectedPhoto, cropRatio, t } = useApp()
   const [pos, setPos] = useState(50)
   const [fav, setFav] = useState(false)
   const [fullScreenMode, setFullScreenMode] = useState(false)
@@ -38,18 +38,18 @@ export function ResultScreen() {
   )
 
   const handleDownloadPNG = () => {
-    Alert.alert('Saved!', 'PNG coloring page saved to your device photo gallery.')
+    Alert.alert(t('result.savedTitle'), t('result.savedBody'))
   }
 
   const handleDownloadPDF = () => {
-    Alert.alert('Exported!', 'High-res PDF vector line art exported to downloads.')
+    Alert.alert(t('result.exportedTitle'), t('result.exportedBody'))
   }
 
   return (
     <Screen
       header={
         <ScreenHeader
-          title="Your Coloring Page"
+          title={t('result.title')}
           onBack={goBack}
           right={
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -155,7 +155,7 @@ export function ResultScreen() {
               pointerEvents: 'none',
             }}
           >
-            <Text style={{ fontSize: 11, fontWeight: '600', color: '#ffffff' }}>Before</Text>
+            <Text style={{ fontSize: 11, fontWeight: '600', color: '#ffffff' }}>{t('result.before')}</Text>
           </View>
 
           <View
@@ -170,7 +170,7 @@ export function ResultScreen() {
               pointerEvents: 'none',
             }}
           >
-            <Text style={{ fontSize: 11, fontWeight: '600', color: '#ffffff' }}>After</Text>
+            <Text style={{ fontSize: 11, fontWeight: '600', color: '#ffffff' }}>{t('result.after')}</Text>
           </View>
         </View>
 
@@ -194,7 +194,7 @@ export function ResultScreen() {
         <AppButton size="lg" block onClick={() => go('success')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Bookmark size={20} color={theme.brandForeground} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.brandForeground }}>Save Coloring Page</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.brandForeground }}>{t('result.savePage')}</Text>
           </View>
         </AppButton>
 
@@ -202,7 +202,7 @@ export function ResultScreen() {
         <AppButton variant="outline" size="lg" block onClick={() => go('style')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <RefreshCw size={20} color={theme.foreground} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>Try Another Style</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: theme.foreground }}>{t('result.tryAnother')}</Text>
           </View>
         </AppButton>
       </View>
